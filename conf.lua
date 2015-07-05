@@ -19,18 +19,12 @@ function love.conf(t)
    t.identity = 'agario-checkers'
    t.console = false
 
-   if t.window == nil then
-      print('window module not found; using screen')
-      t.screen.title = 'Agario Checkers'
-      t.screen.resizable = true
-      t.screen.minwidth = 800
-      t.screen.minheight = 600
-   else
-      t.window.title = 'Agario Checkers'
-      t.window.resizable = true
-      t.window.minwidth = 800
-      t.window.minheight = 600
-   end
+   t.window = t.window or t.screen
+   t.window.title = 'Agario Checkers'
+   t.window.resizable = true
+   t.window.minwidth = 800
+   t.window.minheight = 600
+   t.screen = t.screen or t.window
 
    t.modules.joystick = false
    t.modules.math = false
