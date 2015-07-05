@@ -1,0 +1,20 @@
+Agario Checkers
+===============
+
+Checkers-like game with inspiration from agar.io
+
+Hacking
+-------
+
+Follow the conventions you see used throughout the source code. 3-space
+indentation and 79-column limit with few exceptions. You may submit patches
+through GitHub's pull request system or by [submitting them to Delwink][1].
+
+License
+-------
+
+Agario Checkers is libre software: you are free to use, copy, modify, and
+redistribute it under the terms of version 3 of the GNU Affero General Public
+License. See [COPYING](COPYING) for details.
+
+[1]: mailto:contribute@delwink.com
