@@ -3,6 +3,40 @@ Agario Checkers
 
 Checkers-like game with inspiration from agar.io
 
+Running
+-------
+
+Agario Checkers uses the LÖVE 2D game engine. It must be installed to run the
+game. On Debian-based operating systems, this can be done with
+
+    # apt-get install love
+
+With LÖVE installed, you can start the game in two ways. The first is to use
+the current working directory:
+
+    $ love .
+
+The other is to run a packaged version of the game. See below for details.
+
+Packaging
+---------
+
+One of the conveniences of LÖVE is its simple packaging system. A runnable
+`love` file is simply a zip archive with the Lua sources inside it. A makefile
+has been provided with this program to ease the packaging process. Simply
+execute
+
+    $ make
+
+to zip up the sources and data files into a package. The resulting file will be
+called `agario-checkers.love`, and it can be tested by running
+
+    $ love agario-checkers.love
+
+This package can then be sent to other computers as a standalone game file. Any
+computer with the LÖVE engine installed can run the package, which makes this
+game cross-platform as well.
+
 Hacking
 -------
 
