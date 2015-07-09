@@ -23,7 +23,7 @@ function Piece:__init(x, y, team)
    self.x = x
    self.y = y
    self.team = team
-   self.size = 1
+   self.size = 10
 end
 
 function Piece:move(dtx, dty)
