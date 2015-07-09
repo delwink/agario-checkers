@@ -1,6 +1,6 @@
 OUT=agario-checkers.love
 DATA=README COPYING
-SOURCES=class.lua conf.lua main.lua piece.lua
+SOURCES=class.lua conf.lua event.lua main.lua piece.lua
 
 all: zip
 
