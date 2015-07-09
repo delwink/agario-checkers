@@ -23,7 +23,9 @@ function Piece:__init(x, y, team)
    self.x = x
    self.y = y
    self.team = team
+
    self.size = 10
+   self.king = false
 end
 
 function Piece:move(dtx, dty)
