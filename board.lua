@@ -15,40 +15,12 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-require 'class'
-require 'board'
+BOARD_SIZE = 512
+BOARD_SQUARE_SIZE = BOARD_SIZE / 8
 
-Piece = class()
-
-local R = 1
-local G = 2
-local B = 3
-
-local colors = {
-   {255, 255, 0},
-   {255, 0, 255}
-}
-
-function Piece:__init(x, y, team)
-   self.x = x
-   self.y = y
-   self.team = team
-
-   self.size = 10
-   self.king = false
-end
-
-function Piece:move(dtx, dty)
-   self.x = self.x + dtx
-   self.y = self.y + dty
-end
-
-function Piece:resize(dt)
-   self.size = self.size + dt
-end
-
-function Piece:draw()
-   local bpos = getboardpos()
-   local real_x = bpos.x + (self.x - 1) * BOARD_SQUARE_SIZE
-   local real_y = bpos.y + (self.y - 1) * BOARD_SQUARE_SIZE
+function getboardpos()
+   local halfsize = BOARD_SIZE / 2
+   local xpos = love.window.getWidth() - halfsize
+   local ypos = love.window.getHeight() - halfsize
+   return {x=xpos, y=ypos}
 end
