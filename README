@@ -15,7 +15,8 @@ collide, the one of smaller mass is absorbed; otherwise, they block each other
 from moving.
 
 Pieces who reach the opposite side of the board gain no mass, but they gain the
-ability to move backwards on the board and a crown to symbolize this ability.
+ability to move backwards on the board. A symbol will represent this ability on
+the piece.
 
 Any piece may divide into two equal pieces if sufficient space exists. Half of
 the split piece is ejected 2 spaces in some direction, and it may absorb or be
@@ -24,7 +25,8 @@ absorbed by opposing pieces in the process.
 After a number of moves have been made, a virus may appear which can split a
 colliding piece into many small pieces.
 
-The first player to have all of their pieces absorbed loses.
+The first player to have all of their pieces absorbed loses. If only two pieces
+remain, the player with the piece of larger mass wins.
 
 Running
 -------
