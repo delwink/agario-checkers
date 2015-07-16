@@ -19,12 +19,10 @@ function love.conf(t)
    t.identity = 'agario-checkers'
    t.console = false
 
-   t.window = t.window or t.screen
    t.window.title = 'Agario Checkers'
    t.window.resizable = true
    t.window.minwidth = 800
    t.window.minheight = 600
-   t.screen = t.screen or t.window
 
    t.modules.joystick = false
    t.modules.math = false
