@@ -29,6 +29,8 @@ local colors = {
    {255, 0, 255}
 }
 
+local texture = love.graphics.newImage('res/piece.png')
+
 function Piece:__init(x, y, team)
    self.x = x
    self.y = y
@@ -51,4 +53,9 @@ function Piece:draw()
    local bpos = getboardpos()
    local real_x = bpos.x + (self.x - 1) * BOARD_SQUARE_SIZE
    local real_y = bpos.y + (self.y - 1) * BOARD_SQUARE_SIZE
+   local scale = BOARD_SIZE / 1024
+   local colorset = colors[self.team]
+
+   love.graphics.setColor(colorset[R], colorset[G], colorset[B])
+   love.graphics.draw(texture, real_x, real_y, 0, scale, scale)
 end

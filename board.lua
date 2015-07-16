@@ -20,7 +20,7 @@ BOARD_SQUARE_SIZE = BOARD_SIZE / 8
 
 function getboardpos()
    local halfsize = BOARD_SIZE / 2
-   local xpos = love.window.getWidth() - halfsize
-   local ypos = love.window.getHeight() - halfsize
+   local xpos = love.window.getWidth()/2 - halfsize
+   local ypos = love.window.getHeight()/2 - halfsize
    return {x=xpos, y=ypos}
 end
