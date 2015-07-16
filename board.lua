@@ -18,9 +18,34 @@
 BOARD_SIZE = 512
 BOARD_SQUARE_SIZE = BOARD_SIZE / 8
 
+local darkcolor = {0, 0, 0}
+
 function getboardpos()
    local halfsize = BOARD_SIZE / 2
    local xpos = love.window.getWidth()/2 - halfsize
    local ypos = love.window.getHeight()/2 - halfsize
    return {x=xpos, y=ypos}
+end
+
+local function drawsquare(x, y)
+   love.graphics.rectangle('fill', x, y, BOARD_SQUARE_SIZE, BOARD_SQUARE_SIZE)
+end
+
+local function drawrow(start, y)
+   for i=0,3 do
+      local pos = start + i * BOARD_SQUARE_SIZE * 2
+      drawsquare(pos, y)
+   end
+end
+
+function drawboard()
+   local boardpos = getboardpos()
+
+   love.graphics.setColor(darkcolor)
+
+   for i=0,3 do
+      local ypos = boardpos.y + i * BOARD_SQUARE_SIZE * 2
+      drawrow(boardpos.x + BOARD_SQUARE_SIZE, ypos)
+      drawrow(boardpos.x, ypos + BOARD_SQUARE_SIZE)
+   end
 end
