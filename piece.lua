@@ -21,8 +21,8 @@ require 'board'
 Piece = class()
 
 local colors = {
-   {255, 255, 0},
-   {255, 0, 255}
+   {255, 0, 255},
+   {255, 255, 0}
 }
 
 local texture = love.graphics.newImage('res/piece.png')
