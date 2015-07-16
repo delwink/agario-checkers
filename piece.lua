@@ -20,10 +20,6 @@ require 'board'
 
 Piece = class()
 
-local R = 1
-local G = 2
-local B = 3
-
 local colors = {
    {255, 255, 0},
    {255, 0, 255}
@@ -54,8 +50,7 @@ function Piece:draw()
    local real_x = bpos.x + (self.x - 1) * BOARD_SQUARE_SIZE
    local real_y = bpos.y + (self.y - 1) * BOARD_SQUARE_SIZE
    local scale = BOARD_SIZE / 1024
-   local colorset = colors[self.team]
 
-   love.graphics.setColor(colorset[R], colorset[G], colorset[B])
+   love.graphics.setColor(colors[self.team])
    love.graphics.draw(texture, real_x, real_y, 0, scale, scale)
 end
