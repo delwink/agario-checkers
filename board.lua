@@ -24,6 +24,16 @@ function getboardpos()
    local halfsize = BOARD_SIZE / 2
    local xpos = love.window.getWidth()/2 - halfsize
    local ypos = love.window.getHeight()/2 - halfsize
+
+   return {x=xpos, y=ypos}
+end
+
+function getcenter(x, y)
+   local bpos = getboardpos()
+   local halfsize = BOARD_SQUARE_SIZE / 2
+   local xpos = bpos.x + (x - 1) * BOARD_SQUARE_SIZE + halfsize
+   local ypos = bpos.y + (y - 1) * BOARD_SQUARE_SIZE + halfsize
+
    return {x=xpos, y=ypos}
 end
 

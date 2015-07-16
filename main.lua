@@ -16,8 +16,24 @@
 --
 
 require 'board'
+require 'piece'
+
+local pieces = {}
+
+local function initrow(start, y)
+   local board_dim = BOARD_SIZE / BOARD_SQUARE_SIZE
+   for i=0,3 do
+      local x = start + i * 2
+      table.insert(pieces, Piece(x, y, 1))
+      table.insert(pieces, Piece(board_dim - (x - 1), board_dim - (y - 1), 2))
+   end
+end
 
 function love.load()
+   -- add pieces to each team
+   initrow(2, 1)
+   initrow(1, 2)
+   initrow(2, 3)
 end
 
 function love.update(dt)
@@ -62,5 +78,10 @@ function love.draw()
    for i=0,gridynum do
       local ypos = gridystart + i * gridsize
       love.graphics.line(0, ypos, wwidth, ypos)
+   end
+
+   -- draw idle pieces in position
+   for _, piece in ipairs(pieces) do
+      piece:draw()
    end
 end

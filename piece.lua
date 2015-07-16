@@ -46,11 +46,11 @@ function Piece:resize(dt)
 end
 
 function Piece:draw()
-   local bpos = getboardpos()
-   local real_x = bpos.x + (self.x - 1) * BOARD_SQUARE_SIZE
-   local real_y = bpos.y + (self.y - 1) * BOARD_SQUARE_SIZE
-   local scale = BOARD_SIZE / 1024
+   local center = getcenter(self.x, self.y)
+   local scale = (BOARD_SIZE / 1024) * (self.size / 64)
+   local halfsize = (texture:getWidth() * scale) / 2
 
    love.graphics.setColor(colors[self.team])
-   love.graphics.draw(texture, real_x, real_y, 0, scale, scale)
+   love.graphics.draw(texture, center.x - halfsize, center.y - halfsize, 0,
+		      scale, scale)
 end
