@@ -81,7 +81,7 @@ function love.draw()
    end
 
    -- draw idle pieces in position
-   for _, piece in ipairs(pieces) do
+   for _,piece in ipairs(pieces) do
       piece:draw()
    end
 end
