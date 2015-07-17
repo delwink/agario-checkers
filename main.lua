@@ -19,9 +19,11 @@ require 'board'
 require 'piece'
 
 local pieces = {}
+local wwidth = 0
+local wheight = 0
 
 local function initrow(start, y)
-   local board_dim = BOARD_SIZE / BOARD_SQUARE_SIZE
+   local board_dim = BOARD_SIZE / boardsqsize()
    for i=0,3 do
       local x = start + i * 2
       table.insert(pieces, Piece(x, y, 1))
@@ -37,6 +39,8 @@ function love.load()
 end
 
 function love.update(dt)
+   wwidth = love.window.getWidth()
+   wheight = love.window.getHeight()
 end
 
 function love.draw()
@@ -48,10 +52,7 @@ function love.draw()
 
    -- Agario-style background grid
    love.graphics.setColor(170, 170, 170)
-
-   local wwidth = love.window.getWidth()
-   local wheight = love.window.getHeight()
-   local gridsize = BOARD_SQUARE_SIZE / 3
+   local gridsize = boardsqsize() / 3
 
    local mid = wwidth / 2
    local diff = 0

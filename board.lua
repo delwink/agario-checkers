@@ -16,9 +16,12 @@
 --
 
 BOARD_SIZE = 512
-BOARD_SQUARE_SIZE = BOARD_SIZE / 8
 
 local darkcolor = {0, 0, 0}
+
+function boardsqsize()
+   return BOARD_SIZE / 8
+end
 
 function getboardpos()
    local halfsize = BOARD_SIZE / 2
@@ -30,32 +33,35 @@ end
 
 function getcenter(x, y)
    local bpos = getboardpos()
-   local halfsize = BOARD_SQUARE_SIZE / 2
-   local xpos = bpos.x + (x - 1) * BOARD_SQUARE_SIZE + halfsize
-   local ypos = bpos.y + (y - 1) * BOARD_SQUARE_SIZE + halfsize
+   local sqsize = boardsqsize()
+   local halfsize = sqsize / 2
+   local xpos = bpos.x + (x - 1) * sqsize + halfsize
+   local ypos = bpos.y + (y - 1) * sqsize + halfsize
 
    return {x=xpos, y=ypos}
 end
 
 local function drawsquare(x, y)
-   love.graphics.rectangle('fill', x, y, BOARD_SQUARE_SIZE, BOARD_SQUARE_SIZE)
+   love.graphics.rectangle('fill', x, y, boardsqsize(), boardsqsize())
 end
 
 local function drawrow(start, y)
+   local sqsize = boardsqsize()
+
    for i=0,3 do
-      local pos = start + i * BOARD_SQUARE_SIZE * 2
-      drawsquare(pos, y)
+      drawsquare(start + i * sqsize * 2, y)
    end
 end
 
 function drawboard()
    local boardpos = getboardpos()
+   local sqsize = boardsqsize()
 
    love.graphics.setColor(darkcolor)
 
    for i=0,3 do
-      local ypos = boardpos.y + i * BOARD_SQUARE_SIZE * 2
-      drawrow(boardpos.x + BOARD_SQUARE_SIZE, ypos)
-      drawrow(boardpos.x, ypos + BOARD_SQUARE_SIZE)
+      local ypos = boardpos.y + i * sqsize * 2
+      drawrow(boardpos.x + sqsize, ypos)
+      drawrow(boardpos.x, ypos + sqsize)
    end
 end
