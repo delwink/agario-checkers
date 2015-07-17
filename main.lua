@@ -40,18 +40,17 @@ function love.update(dt)
 end
 
 function love.draw()
-   local wwidth = love.window.getWidth()
-   local wheight = love.window.getHeight()
-
    -- white background
-   love.graphics.setColor(255, 255, 255)
-   love.graphics.rectangle('fill', 0, 0, wwidth, wheight)
+   love.graphics.setBackgroundColor(255, 255, 255)
 
    -- checkerboard squares
    drawboard()
 
    -- Agario-style background grid
    love.graphics.setColor(170, 170, 170)
+
+   local wwidth = love.window.getWidth()
+   local wheight = love.window.getHeight()
    local gridsize = BOARD_SQUARE_SIZE / 3
 
    local mid = wwidth / 2
