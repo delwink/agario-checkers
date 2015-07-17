@@ -47,37 +47,27 @@ function love.draw()
    love.graphics.setColor(255, 255, 255)
    love.graphics.rectangle('fill', 0, 0, wwidth, wheight)
 
-   -- black checkerboard squares
+   -- checkerboard squares
    drawboard()
 
    -- Agario-style background grid
    love.graphics.setColor(170, 170, 170)
-   local gridxstart = wwidth / 2
-   local gridystart = wheight / 2
    local gridsize = BOARD_SQUARE_SIZE / 3
 
-   local gridxnum = 0
-   while gridxstart - gridsize > 0 do
-      gridxstart = gridxstart - gridsize
-      gridxnum = gridxnum + 1
-   end
-   gridxnum = gridxnum * 2
-
-   local gridynum = 0
-   while gridystart - gridsize > 0 do
-      gridystart = gridystart - gridsize
-      gridynum = gridynum + 1
-   end
-   gridynum = gridynum * 2
-
-   for i=0,gridxnum do
-      local xpos = gridxstart + i * gridsize
-      love.graphics.line(xpos, 0, xpos, wheight)
+   local mid = wwidth / 2
+   local diff = 0
+   while diff * 2 < wwidth do
+      love.graphics.line(mid - diff, 0, mid - diff, wheight)
+      love.graphics.line(mid + diff, 0, mid + diff, wheight)
+      diff = diff + gridsize
    end
 
-   for i=0,gridynum do
-      local ypos = gridystart + i * gridsize
-      love.graphics.line(0, ypos, wwidth, ypos)
+   mid = wheight / 2
+   diff = 0
+   while diff * 2 < wheight do
+      love.graphics.line(0, mid - diff, wwidth, mid - diff)
+      love.graphics.line(0, mid + diff, wwidth, mid + diff)
+      diff = diff + gridsize
    end
 
    -- draw idle pieces in position
