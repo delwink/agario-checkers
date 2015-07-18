@@ -38,6 +38,16 @@ function love.load()
    initrow(2, 3)
 end
 
+function love.keypressed(key, isrepeat)
+   if isrepeat then
+      return
+   end
+
+   if 'escape' == key then
+      love.event.quit()
+   end
+end
+
 function love.update(dt)
    wwidth = love.window.getWidth()
    wheight = love.window.getHeight()
