@@ -21,6 +21,7 @@ require 'piece'
 local pieces = {}
 local wwidth = 0
 local wheight = 0
+local turn = 0
 
 local function initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
@@ -36,6 +37,8 @@ function love.load()
    initrow(2, 1)
    initrow(1, 2)
    initrow(2, 3)
+
+   turn = 1
 end
 
 function love.keypressed(key, isrepeat)
