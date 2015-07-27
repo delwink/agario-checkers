@@ -26,6 +26,5 @@ function love.conf(t)
 
    t.modules.joystick = false
    t.modules.math = false
-   t.modules.physics = false
    t.modules.timer = false
 end

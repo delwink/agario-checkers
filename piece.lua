@@ -45,12 +45,17 @@ function Piece:resize(dt)
    self.size = self.size + dt
 end
 
-function Piece:draw()
+function Piece:getrealcoords()
    local center = getcenter(self.x, self.y)
    local scale = (BOARD_SIZE / 1024) * (self.size / 64)
    local halfsize = (texture:getWidth() * scale) / 2
 
+   return {x=center.x - halfsize, y=center.y - halfsize, scale=scale}
+end
+
+function Piece:draw()
+   local c = self:getrealcoords()
+
    love.graphics.setColor(colors[self.team])
-   love.graphics.draw(texture, center.x - halfsize, center.y - halfsize, 0,
-		      scale, scale)
+   love.graphics.draw(texture, c.x, c.y, 0, c.scale, c.scale)
 end

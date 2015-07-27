@@ -19,9 +19,10 @@ require 'board'
 require 'piece'
 
 local pieces = {}
-local wwidth = 0
-local wheight = 0
+local selected = {0, 0}
 local turn = 0
+local wheight = 0
+local wwidth = 0
 
 local function initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
@@ -48,6 +49,23 @@ function love.keypressed(key, isrepeat)
 
    if 'escape' == key then
       love.event.quit()
+   end
+end
+
+function love.mousepressed(x, y, button)
+   if 'l' == button then
+      for _,piece in ipairs(pieces) do
+	 local c = piece:getrealcoords()
+	 local loc = love.physics.newRectangleShape(c.scale, c.scale)
+
+	 print(x, c.x, y, c.y)
+
+	 if loc:testPoint(c.x, c.y, 0, x, y) then
+	    selected = {point.x, point.y}
+	    print('selected', selected[1], selected[2])
+	    break
+	 end
+      end
    end
 end
 
