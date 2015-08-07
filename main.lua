@@ -56,12 +56,13 @@ function love.mousepressed(x, y, button)
    if 'l' == button then
       for _,piece in ipairs(pieces) do
 	 local c = piece:getrealcoords()
-	 local loc = love.physics.newRectangleShape(c.scale, c.scale)
+	 local len = c.scale * 128
+	 local loc = love.physics.newRectangleShape(len, len)
 
-	 print(x, c.x, y, c.y)
+	 print(x, c.x, y, c.y, len)
 
-	 if loc:testPoint(c.x, c.y, 0, x, y) then
-	    selected = {point.x, point.y}
+	 if loc:testPoint(c.x + len/2, c.y + len/2, 0, x, y) then
+	    selected = {piece.x, piece.y}
 	    print('selected', selected[1], selected[2])
 	    break
 	 end
