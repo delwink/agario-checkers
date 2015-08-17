@@ -19,7 +19,7 @@ require 'board'
 require 'piece'
 
 local pieces = {}
-local selected = {0, 0}
+local selected = nil
 local turn = 0
 local wheight = 0
 local wwidth = 0
@@ -60,7 +60,7 @@ function love.mousepressed(x, y, button)
 	 local loc = love.physics.newRectangleShape(len, len)
 
 	 if loc:testPoint(c.x + len/2, c.y + len/2, 0, x, y) then
-	    selected = {piece.x, piece.y}
+	    selected = piece
 	    break
 	 end
       end
@@ -102,5 +102,13 @@ function love.draw()
    -- draw idle pieces in position
    for _,piece in ipairs(pieces) do
       piece:draw()
+   end
+
+   if selected then
+      love.graphics.setColor(170, 100, 0)
+
+      local c = selected:getrealcoords()
+      local size = c.scale * 128
+      love.graphics.rectangle('line', c.x, c.y, size, size)
    end
 end
