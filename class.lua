@@ -1,5 +1,6 @@
 --[[
 
+lua-classes - Add objects to your Lua
 Copyright (C) 2015 Delwink, LLC
 
 Permission to use, copy, modify, and/or distribute this software for any
