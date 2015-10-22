@@ -192,8 +192,7 @@ function love.draw()
    end
 
    love.graphics.setColor(0, 0, 0)
-   love.graphics.printf(string.format("Mouse: %d, %d, %d", mx, my,
-				      math.deg(getangle(50, 50, mx, my))),
+   love.graphics.printf(string.format("Mouse: %d, %d", mx, my),
 			0, 0, wwidth, 'left')
 
    local spos = getspace(mx, my)
