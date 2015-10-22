@@ -59,3 +59,7 @@ function Piece:draw()
    love.graphics.setColor(colors[self.team])
    love.graphics.draw(texture, c.x, c.y, 0, c.scale, c.scale)
 end
+
+function teamcolor(team)
+   return colors[team]
+end

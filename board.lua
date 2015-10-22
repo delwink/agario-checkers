@@ -65,3 +65,36 @@ function drawboard()
       drawrow(boardpos.x, ypos + sqsize)
    end
 end
+
+function inspace(space, x, y)
+   local sqsize = boardsqsize()
+   return (x >= space.x and y >= space.y and x <= space.x + sqsize
+	      and y <= space.y + sqsize)
+end
+
+function getsqpos(x, y)
+   local bpos = getboardpos()
+   local sqsize = boardsqsize()
+   x = x - 1
+   y = y - 1
+
+   return {x=bpos.x + (x * sqsize), y=bpos.y + (y * sqsize)}
+end
+
+function onboard(x, y)
+   local bpos = getboardpos()
+   return (x >= bpos.x and x <= bpos.x + BOARD_SIZE
+	      and y >= bpos.y and y <= bpos.y + BOARD_SIZE)
+end
+
+function getspace(x, y)
+   local bpos = getboardpos()
+   local sqsize = boardsqsize()
+
+   if not onboard(x, y) then
+      return {x=-1, y=-1}
+   end
+
+   return {x=math.floor((x - bpos.x) / sqsize) + 1,
+	   y=math.floor((y - bpos.y) / sqsize) + 1}
+end

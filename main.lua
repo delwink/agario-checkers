@@ -16,13 +16,27 @@
 --
 
 require 'board'
+require 'geom'
 require 'piece'
 
 local pieces = {}
 local selected = nil
+local targetspace = nil
 local turn = 0
 local wheight = 0
 local wwidth = 0
+
+local TOO_FAR = 0
+local MOVE = 1
+local JOIN = 2
+local ABSORB = 3
+local FEED = 4
+local moveactions = {
+   {text='Move', color={255, 255, 0}},
+   {text='Join', color={0, 0, 255}},
+   {text='Absorb', color={0, 255, 0}},
+   {text='Feed', color={255, 0, 0}}
+}
 
 local function initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
@@ -52,24 +66,62 @@ function love.keypressed(key, isrepeat)
    end
 end
 
+local function selectpiece(x, y)
+   local space = getspace(x, y)
+   for _,piece in ipairs(pieces) do
+      if space.x == piece.x and space.y == piece.y then
+	 return piece
+      end
+   end
+
+   return nil
+end
+
+local function even(n)
+   return n % 2 == 0
+end
+
+local function odd(n)
+   return not even(n)
+end
+
+local function darkspace(space)
+   if odd(space.y) then
+      return even(space.x)
+   end
+
+   return odd(space.x)
+end
+
+local function selectspace(x, y)
+   local space = getspace(x, y)
+   if space.x < 0 or space.y < 0 or not darkspace(space) then
+      return nil
+   end
+
+   return space
+end
+
 function love.mousepressed(x, y, button)
    if 'l' == button then
-      for _,piece in ipairs(pieces) do
-	 local c = piece:getrealcoords()
-	 local len = c.scale * 128
-	 local loc = love.physics.newRectangleShape(len, len)
-
-	 if loc:testPoint(c.x + len/2, c.y + len/2, 0, x, y) then
-	    selected = piece
-	    break
-	 end
+      if not selected then
+	 selected = selectpiece(x, y)
+      else
+	 targetspace = selectspace(x, y)
       end
+   elseif 'r' == button then
+      selected = nil
+      targetspace = nil
    end
 end
 
 function love.update(dt)
    wwidth = love.window.getWidth()
    wheight = love.window.getHeight()
+end
+
+local function getmoveaction(space, x, y)
+   return MOVE
 end
 
 function love.draw()
@@ -104,11 +156,47 @@ function love.draw()
       piece:draw()
    end
 
+   local mx, my = love.mouse.getX(), love.mouse.getY()
    if selected then
-      love.graphics.setColor(170, 100, 0)
+      love.graphics.setColor(teamcolor(selected.team))
 
-      local c = selected:getrealcoords()
-      local size = c.scale * 128
-      love.graphics.rectangle('line', c.x, c.y, size, size)
+      local spos = getsqpos(selected.x, selected.y)
+      local sqsize = boardsqsize()
+      drawbox(spos.x, spos.y, sqsize, sqsize)
+
+      if not targetspace then
+	 local center = getcenter(selected.x, selected.y)
+	 drawarrow(center.x, center.y, mx, my)
+
+	 local mspos = getspace(mx, my)
+	 local msqpos = getsqpos(mspos.x, mspos.y)
+	 local moveaction = getmoveaction(selected, mx, my)
+	 if TOO_FAR == moveaction then
+	    love.graphics.setColor(255, 0, 0)
+	 else
+	    love.graphics.setColor(moveactions[moveaction].color)
+	    love.graphics.print(moveactions[moveaction].text, msqpos.x,
+				msqpos.y)
+	 end
+
+	 drawbox(msqpos.x, msqpos.y, sqsize, sqsize)
+      end
    end
+
+   if targetspace then
+      love.graphics.setColor(255, 255, 0)
+
+      local c = getsqpos(targetspace.x, targetspace.y)
+      local sqsize = boardsqsize()
+      drawbox(c.x, c.y, sqsize, sqsize)
+   end
+
+   love.graphics.setColor(0, 0, 0)
+   love.graphics.printf(string.format("Mouse: %d, %d, %d", mx, my,
+				      math.deg(getangle(50, 50, mx, my))),
+			0, 0, wwidth, 'left')
+
+   local spos = getspace(mx, my)
+   love.graphics.printf(string.format("Space: %d, %d", spos.x, spos.y),
+			0, 0, wwidth, 'right')
 end
