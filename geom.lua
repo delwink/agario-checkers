@@ -33,7 +33,7 @@ function drawbox(x, y, w, h)
    drawline(x + w, y, x + w, y + h)
 end
 
-local function getquadrant(deltax, deltay)
+function getquadrant(deltax, deltay)
    if deltax > 0 then
       if deltay > 0 then
 	 return 1

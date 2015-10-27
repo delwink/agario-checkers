@@ -20,23 +20,11 @@ require 'geom'
 require 'piece'
 
 local pieces = {}
-local selected = nil
-local targetspace = nil
+local selected
+local targetspace
 local turn = 0
 local wheight = 0
 local wwidth = 0
-
-local TOO_FAR = 0
-local MOVE = 1
-local JOIN = 2
-local ABSORB = 3
-local FEED = 4
-local moveactions = {
-   {text='Move', color={255, 255, 0}},
-   {text='Join', color={0, 0, 255}},
-   {text='Absorb', color={0, 255, 0}},
-   {text='Feed', color={255, 0, 0}}
-}
 
 local function initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
@@ -69,7 +57,7 @@ end
 local function selectpiece(x, y)
    local space = getspace(x, y)
    for _,piece in ipairs(pieces) do
-      if space.x == piece.x and space.y == piece.y then
+      if piece.team == turn and space.x == piece.x and space.y == piece.y then
 	 return piece
       end
    end
@@ -77,37 +65,12 @@ local function selectpiece(x, y)
    return nil
 end
 
-local function even(n)
-   return n % 2 == 0
-end
-
-local function odd(n)
-   return not even(n)
-end
-
-local function darkspace(space)
-   if odd(space.y) then
-      return even(space.x)
-   end
-
-   return odd(space.x)
-end
-
-local function selectspace(x, y)
-   local space = getspace(x, y)
-   if space.x < 0 or space.y < 0 or not darkspace(space) then
-      return nil
-   end
-
-   return space
-end
-
 function love.mousepressed(x, y, button)
    if 'l' == button then
       if not selected then
 	 selected = selectpiece(x, y)
       else
-	 targetspace = selectspace(x, y)
+	 -- make move
       end
    elseif 'r' == button then
       selected = nil
@@ -115,13 +78,59 @@ function love.mousepressed(x, y, button)
    end
 end
 
+local function trymove(quad, distance)
+   local x, y
+
+   if 1 == quad then
+      x = selected.x + distance
+      y = selected.y + distance
+   elseif 2 == quad then
+      x = selected.x - distance
+      y = selected.y + distance
+   elseif 3 == quad then
+      x = selected.x - distance
+      y = selected.y - distance
+   else
+      x = selected.x + distance
+      y = selected.y - distance
+   end
+
+   if x < 1 or y < 1 or x > 8 or y > 8 then
+      return nil
+   end
+
+   return {x=x, y=y}
+end
+
+local function getmove()
+   if not selected then
+      return nil
+   end
+
+   local start = getcenter(selected.x, selected.y)
+   local mx, my = love.mouse.getX(), love.mouse.getY()
+   local quad = getquadrant(mx - start.x, my - start.y)
+   if not quad then
+      return nil
+   end
+
+   if love.keyboard.isDown(' ') then
+      local move = trymove(quad, 2)
+      if move and trymove(quad, 1) then
+	 return move
+      end
+   end
+
+   return trymove(quad, 1)
+end
+
 function love.update(dt)
    wwidth = love.window.getWidth()
    wheight = love.window.getHeight()
-end
 
-local function getmoveaction(space, x, y)
-   return MOVE
+   if selected then
+      targetspace = getmove()
+   end
 end
 
 function love.draw()
@@ -164,31 +173,11 @@ function love.draw()
       local sqsize = boardsqsize()
       drawbox(spos.x, spos.y, sqsize, sqsize)
 
-      if not targetspace then
-	 local center = getcenter(selected.x, selected.y)
-	 drawarrow(center.x, center.y, mx, my)
-
-	 local mspos = getspace(mx, my)
-	 local msqpos = getsqpos(mspos.x, mspos.y)
-	 local moveaction = getmoveaction(selected, mx, my)
-	 if TOO_FAR == moveaction then
-	    love.graphics.setColor(255, 0, 0)
-	 else
-	    love.graphics.setColor(moveactions[moveaction].color)
-	    love.graphics.print(moveactions[moveaction].text, msqpos.x,
-				msqpos.y)
-	 end
-
-	 drawbox(msqpos.x, msqpos.y, sqsize, sqsize)
+      if targetspace then
+	 local from = getcenter(selected.x, selected.y)
+	 local to = getcenter(targetspace.x, targetspace.y)
+	 drawarrow(from.x, from.y, to.x, to.y)
       end
-   end
-
-   if targetspace then
-      love.graphics.setColor(255, 255, 0)
-
-      local c = getsqpos(targetspace.x, targetspace.y)
-      local sqsize = boardsqsize()
-      drawbox(c.x, c.y, sqsize, sqsize)
    end
 
    love.graphics.setColor(0, 0, 0)
