@@ -165,7 +165,6 @@ function love.draw()
       piece:draw()
    end
 
-   local mx, my = love.mouse.getX(), love.mouse.getY()
    if selected then
       love.graphics.setColor(teamcolor(selected.team))
 
@@ -180,6 +179,7 @@ function love.draw()
       end
    end
 
+   local mx, my = love.mouse.getX(), love.mouse.getY()
    love.graphics.setColor(0, 0, 0)
    love.graphics.printf(string.format("Mouse: %d, %d", mx, my),
 			0, 0, wwidth, 'left')
