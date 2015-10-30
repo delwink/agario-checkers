@@ -41,6 +41,26 @@ function Piece:move(dtx, dty)
    self.y = self.y + dty
 end
 
+function Piece:canmove(x, y)
+   if x < 1 or y < 1 or x > 8 or y > 8 then
+      return false
+   end
+
+   if not self.king then
+      if 1 == self.team then
+	 if y < self.y then
+	    return false
+	 end
+      else
+	 if y > self.y then
+	    return false
+	 end
+      end
+   end
+
+   return true
+end
+
 function Piece:resize(dt)
    self.size = self.size + dt
 end

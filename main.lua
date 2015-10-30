@@ -95,7 +95,7 @@ local function trymove(quad, distance)
       y = selected.y - distance
    end
 
-   if x < 1 or y < 1 or x > 8 or y > 8 then
+   if not selected:canmove(x, y) then
       return nil
    end
 
