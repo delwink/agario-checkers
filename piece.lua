@@ -36,9 +36,9 @@ function Piece:__init(x, y, team)
    self.king = false
 end
 
-function Piece:move(dtx, dty)
-   self.x = self.x + dtx
-   self.y = self.y + dty
+function Piece:move(x, y)
+   self.x = x
+   self.y = y
 end
 
 function Piece:canmove(x, y)

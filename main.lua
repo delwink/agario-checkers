@@ -22,6 +22,7 @@ require 'piece'
 local pieces = {}
 local selected
 local targetspace
+local wantsplit
 local turn = 0
 local wheight = 0
 local wwidth = 0
@@ -65,12 +66,55 @@ local function selectpiece(x, y)
    return nil
 end
 
+local function getoccupying(x, y)
+   for i,piece in ipairs(pieces) do
+      if piece.x == x and piece.y == y then
+	 return i
+      end
+   end
+end
+
+local function absorb(o)
+   selected:move(targetspace.x, targetspace.y)
+   selected.size = selected.size + pieces[o].size
+   table.remove(pieces, o)
+end
+
+local function makemove()
+   if wantsplit then
+      -- split
+   else
+      local o = getoccupying(targetspace.x, targetspace.y)
+      if o then
+	 if (selected.team == pieces[o].team
+	     or selected.size > pieces[o].size) then
+	    absorb(o)
+	 else
+	    return
+	 end
+      else
+	 selected:move(targetspace.x, targetspace.y)
+      end
+   end
+
+   if selected.y == 1 or selected.y == 8 then
+      selected.king = true
+   end
+
+   selected = nil
+   if turn == 1 then
+      turn = 2
+   else
+      turn = 1
+   end
+end
+
 function love.mousepressed(x, y, button)
    if 'l' == button then
       if not selected then
 	 selected = selectpiece(x, y)
-      else
-	 -- make move
+      elseif targetspace then
+	 makemove()
       end
    elseif 'r' == button then
       selected = nil
@@ -79,6 +123,10 @@ function love.mousepressed(x, y, button)
 end
 
 local function trymove(quad, distance)
+   if distance == 2 and not trymove(quad, 1) then
+      return nil
+   end
+
    local x, y
 
    if 1 == quad then
@@ -114,7 +162,7 @@ local function getmove()
       return nil
    end
 
-   if love.keyboard.isDown(' ') then
+   if wantsplit then
       local move = trymove(quad, 2)
       if move and trymove(quad, 1) then
 	 return move
@@ -129,6 +177,7 @@ function love.update(dt)
    wheight = love.window.getHeight()
 
    if selected then
+      wantsplit = love.keyboard.isDown(' ')
       targetspace = getmove()
    end
 end
