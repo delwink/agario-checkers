@@ -77,6 +77,9 @@ end
 local function absorb(o)
    selected:move(targetspace.x, targetspace.y)
    selected.size = selected.size + pieces[o].size
+   if pieces[o].team == selected.team and pieces[o].king then
+      selected.king = true
+   end
    table.remove(pieces, o)
 end
 
