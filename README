@@ -21,7 +21,10 @@ the piece.
 Any piece may divide into two equal pieces if sufficient space exists. Half of
 the split piece is ejected 2 spaces in some direction, and it may absorb
 opposing pieces in the process. If a larger opponent piece is in the line of
-fire, the game software prevents accidental suicide of a piece.
+fire, the game software prevents accidental suicide of a piece. If a king
+splits, the ejected piece does not keep king status. This is considered a
+sacrifice so that players may not quickly split and merge with all their pieces
+to obtain a full board of kings.
 
 The first player to have all of their pieces absorbed loses. If only two pieces
 remain, the player with the piece of larger mass wins.
