@@ -26,6 +26,7 @@ local colors = {
 }
 
 local texture = love.graphics.newImage('res/piece.png')
+local king = love.graphics.newImage('res/king.png')
 
 function Piece:__init(x, y, team)
    self.x = x
@@ -78,6 +79,12 @@ function Piece:draw()
 
    love.graphics.setColor(colors[self.team])
    love.graphics.draw(texture, c.x, c.y, 0, c.scale, c.scale)
+
+   if self.king then
+      love.graphics.setColor(colors[self.team][1], colors[self.team][2],
+			     colors[self.team][3], 50)
+      love.graphics.draw(king, c.x, c.y, 0, c.scale, c.scale)
+   end
 end
 
 function teamcolor(team)
