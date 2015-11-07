@@ -16,16 +16,22 @@
 --
 
 require 'board'
+require 'button'
 require 'geom'
 require 'piece'
 
-local pieces = {}
+local buttons
+local pieces
 local selected
 local targetspace
+local turn
 local wantsplit
-local turn = 0
-local wheight = 0
-local wwidth = 0
+local winner
+local wheight
+local wwidth
+
+local mainfont = love.graphics.getFont()
+local winfont = love.graphics.newFont(25)
 
 local function initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
@@ -36,13 +42,29 @@ local function initrow(start, y)
    end
 end
 
-function love.load()
-   -- add pieces to each team
+local function resetgame()
+   pieces = {}
    initrow(2, 1)
    initrow(1, 2)
    initrow(2, 3)
 
    turn = 1
+   selected = nil
+   targetspace = nil
+   wantsplit = false
+end
+
+function love.load()
+   resetgame()
+
+   local bg = {245, 245, 245}
+   local fg = {0, 0, 0}
+   buttons = {}
+   table.insert(buttons, Button(5, 5, 50, 18, bg, fg))
+
+   buttons[1]:settext('Reset')
+   buttons[1]:setvisible(true)
+   buttons[1]:addlistener(resetgame)
 end
 
 function love.keypressed(key, isrepeat)
@@ -178,6 +200,17 @@ end
 
 function love.mousepressed(x, y, button)
    if 'l' == button then
+      for _,button in ipairs(buttons) do
+	 if button:isvisible() and button:isclick(x, y) then
+	    button:onclick()
+	    return
+	 end
+      end
+
+      if winner ~= 0 then
+	 return
+      end
+
       if not selected then
 	 selected = selectpiece(x, y)
       elseif targetspace then
@@ -239,9 +272,36 @@ local function getmove()
    return trymove(quad, 1)
 end
 
+function checkwinner()
+   local numpieces = {0, 0}
+   local biggest = nil
+   for _,piece in ipairs(pieces) do
+      numpieces[piece.team] = numpieces[piece.team] + 1
+
+      if not biggest or piece.size > biggest.size then
+	 biggest = piece
+      end
+   end
+
+   if numpieces[1] == 0 then
+      winner = 2
+   elseif numpieces[2] == 0 then
+      winner = 1
+   elseif numpieces[1] == 1 and numpieces[2] == 1 then
+      winner = biggest.team
+   else
+      winner = 0
+   end
+end
+
 function love.update(dt)
    wwidth = love.window.getWidth()
    wheight = love.window.getHeight()
+
+   checkwinner()
+   if winner ~= 0 then
+      return
+   end
 
    if selected then
       wantsplit = love.keyboard.isDown(' ')
@@ -293,5 +353,18 @@ function love.draw()
 	 local to = getcenter(targetspace.x, targetspace.y)
 	 drawarrow(from.x, from.y, to.x, to.y)
       end
+   end
+
+   for _,button in ipairs(buttons) do
+      button:draw()
+   end
+
+   if winner ~= 0 then
+      local winstr = string.format('Player %d wins!', winner)
+      local bpos = getboardpos()
+      local y = winfont:getHeight() + 12
+      love.graphics.setFont(winfont)
+      love.graphics.printf(winstr, bpos.x, bpos.y - y, BOARD_SIZE, 'center')
+      love.graphics.setFont(mainfont)
    end
 end
