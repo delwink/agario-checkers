@@ -75,7 +75,7 @@ local function getoccupying(x, y)
 end
 
 local function absorb(o)
-   selected:move(targetspace.x, targetspace.y)
+   selected:move(pieces[o].x, pieces[o].y)
    selected.size = selected.size + pieces[o].size
    if pieces[o].team == selected.team and pieces[o].king then
       selected.king = true
@@ -83,22 +83,84 @@ local function absorb(o)
    table.remove(pieces, o)
 end
 
+local function canabsorb(o, sizemod)
+   if not sizemod then
+      sizemod = 1
+   end
+
+   if o and not (selected.team == pieces[o].team
+		 or selected.size / sizemod > pieces[o].size) then
+      return false
+   end
+
+   return true
+end
+
+local function singlemove(o)
+   if not o then
+      o = getoccupying(targetspace.x, targetspace.y)
+   end
+
+   if o then
+      if canabsorb(o) then
+	 absorb(o)
+      else
+	 return false
+      end
+   else
+      selected:move(targetspace.x, targetspace.y)
+   end
+
+   return true
+end
+
+local function split()
+   local new = Piece(selected.x, selected.y, selected.team)
+   selected.size = selected.size / 2
+   new.size = selected.size
+   table.insert(pieces, new)
+   selected = new
+end
+
 local function makemove()
    if wantsplit then
-      -- split
-   else
       local o = getoccupying(targetspace.x, targetspace.y)
-      if o then
-	 if (selected.team == pieces[o].team
-	     or selected.size > pieces[o].size) then
-	    absorb(o)
-	 else
+      if math.abs(targetspace.x - selected.x) == 2 then
+	 if not canabsorb(o, 2) then
 	    return
 	 end
+
+	 local space = {x = targetspace.x, y = targetspace.y}
+	 local orig = {x = targetspace.x, y = targetspace.y}
+	 if space.x < selected.x then
+	    space.x = space.x + 1
+	 else
+	    space.x = space.x - 1
+	 end
+
+	 if space.y < selected.y then
+	    space.y = space.y + 1
+	 else
+	    space.y = space.y - 1
+	 end
+
+	 o = getoccupying(space.x, space.y)
+	 if not canabsorb(o, 2) then
+	    return
+	 end
+
+	 split()
+	 targetspace = space
+	 singlemove()
+	 targetspace = orig
+      elseif not canabsorb(o, 2) then
+	 return
       else
-	 selected:move(targetspace.x, targetspace.y)
+	 split()
       end
    end
+
+   singlemove()
 
    if selected.y == 1 or selected.y == 8 then
       selected.king = true
@@ -236,7 +298,10 @@ function love.draw()
    love.graphics.printf(string.format("Mouse: %d, %d", mx, my),
 			0, 0, wwidth, 'left')
 
-   local spos = getspace(mx, my)
-   love.graphics.printf(string.format("Space: %d, %d", spos.x, spos.y),
-			0, 0, wwidth, 'right')
+   local numpieces = 0
+   for _,_ in ipairs(pieces) do
+      numpieces = numpieces + 1
+   end
+   love.graphics.printf(string.format("Pieces: %d", numpieces), 0, 0, wwidth,
+			'right')
 end
