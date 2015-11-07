@@ -16,11 +16,12 @@
 --
 
 BOARD_SIZE = 512
+BOARD_SQ_SIZE = BOARD_SIZE / 8
 
 local darkcolor = {0, 0, 0}
 
 function boardsqsize()
-   return BOARD_SIZE / 8
+   return BOARD_SQ_SIZE
 end
 
 function getboardpos()
