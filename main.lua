@@ -294,16 +294,4 @@ function love.draw()
 	 drawarrow(from.x, from.y, to.x, to.y)
       end
    end
-
-   local mx, my = love.mouse.getX(), love.mouse.getY()
-   love.graphics.setColor(0, 0, 0)
-   love.graphics.printf(string.format("Mouse: %d, %d", mx, my),
-			0, 0, wwidth, 'left')
-
-   local numpieces = 0
-   for _,_ in ipairs(pieces) do
-      numpieces = numpieces + 1
-   end
-   love.graphics.printf(string.format("Pieces: %d", numpieces), 0, 0, wwidth,
-			'right')
 end
