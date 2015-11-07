@@ -12,21 +12,30 @@ the first move. All pieces begin with a mass of 10.
 
 Pieces of the same player may merge to combine their mass. If opposing pieces
 collide, the one of smaller mass is absorbed; otherwise, they block each other
-from moving.
+from moving. The game software prevents a player from feeding the opponent.
 
 Pieces who reach the opposite side of the board gain no mass, but they gain the
 ability to move backwards on the board. A symbol will represent this ability on
 the piece.
 
 Any piece may divide into two equal pieces if sufficient space exists. Half of
-the split piece is ejected 2 spaces in some direction, and it may absorb or be
-absorbed by opposing pieces in the process.
-
-After a number of moves have been made, a virus may appear which can split a
-colliding piece into many small pieces.
+the split piece is ejected 2 spaces in some direction, and it may absorb
+opposing pieces in the process. If a larger opponent piece is in the line of
+fire, the game software prevents accidental suicide of a piece.
 
 The first player to have all of their pieces absorbed loses. If only two pieces
 remain, the player with the piece of larger mass wins.
+
+Controls
+--------
+
+Select a piece to move with the left mouse button. Purple player moves first.
+
+An arrow will point to spaces you can try to move to. Left click to move, or
+right click to cancel your piece selection.
+
+Hold space before moving to perform a split (as described above in the
+concept).
 
 Running
 -------
