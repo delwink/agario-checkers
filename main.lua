@@ -30,6 +30,7 @@ local winner
 local wheight
 local wwidth
 
+local authorlogo = love.graphics.newImage('res/author.png')
 local mainfont = love.graphics.getFont()
 local winfont = love.graphics.newFont(25)
 
@@ -335,6 +336,10 @@ function love.draw()
       love.graphics.line(0, mid + diff, wwidth, mid + diff)
       diff = diff + gridsize
    end
+
+   love.graphics.setColor(0, 0, 0)
+   love.graphics.draw(authorlogo, 0, wheight - authorlogo:getHeight()/2, 0,
+		      0.5, 0.5)
 
    -- draw idle pieces in position
    for _,piece in ipairs(pieces) do
