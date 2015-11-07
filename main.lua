@@ -160,7 +160,9 @@ local function makemove()
       end
    end
 
-   singlemove()
+   if not singlemove() then
+      return
+   end
 
    if selected.y == 1 or selected.y == 8 then
       selected.king = true
