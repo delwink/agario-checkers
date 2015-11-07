@@ -288,7 +288,8 @@ function checkwinner()
       winner = 2
    elseif numpieces[2] == 0 then
       winner = 1
-   elseif numpieces[1] == 1 and numpieces[2] == 1 then
+   elseif (numpieces[1] == 1 and numpieces[2] == 1
+	   and pieces[1].size ~= pieces[2].size) then
       winner = biggest.team
    else
       winner = 0
