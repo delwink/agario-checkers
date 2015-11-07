@@ -337,6 +337,7 @@ function love.draw()
       diff = diff + gridsize
    end
 
+   -- draw author logo
    love.graphics.setColor(0, 0, 0)
    love.graphics.draw(authorlogo, 0, wheight - authorlogo:getHeight()/2, 0,
 		      0.5, 0.5)
@@ -346,6 +347,7 @@ function love.draw()
       piece:draw()
    end
 
+   -- draw box around selected piece
    if selected then
       love.graphics.setColor(teamcolor(selected.team))
 
@@ -353,6 +355,7 @@ function love.draw()
       local sqsize = boardsqsize()
       drawbox(spos.x, spos.y, sqsize, sqsize)
 
+      -- draw arrow to attempted move
       if targetspace then
 	 local from = getcenter(selected.x, selected.y)
 	 local to = getcenter(targetspace.x, targetspace.y)
@@ -360,10 +363,12 @@ function love.draw()
       end
    end
 
+   -- draw all buttons
    for _,button in ipairs(buttons) do
       button:draw()
    end
 
+   -- indicate winner
    if winner ~= 0 then
       local winstr = string.format('Player %d wins!', winner)
       local bpos = getboardpos()
