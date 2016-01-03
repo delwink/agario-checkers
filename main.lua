@@ -190,7 +190,8 @@ local function makemove()
       return
    end
 
-   if selected.y == 1 or selected.y == 8 then
+   if ((selected.y == 1 and selected.team == 2)
+      or (selected.y == 8 and selected.team == 1)) then
       selected.king = true
    end
 
