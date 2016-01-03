@@ -34,6 +34,9 @@ local authorlogo = love.graphics.newImage('res/author.png')
 local mainfont = love.graphics.getFont()
 local winfont = love.graphics.newFont(25)
 
+love.window.getWidth = love.graphics.getWidth or love.window.getWidth
+love.window.getHeight = love.graphics.getHeight or love.window.getHeight
+
 local function initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
    for i=0,3 do
