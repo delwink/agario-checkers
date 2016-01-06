@@ -1,6 +1,6 @@
 --
 --  Agario Checkers - Checkers-like game with inspiration from agar.io
---  Copyright (C) 2015 Delwink, LLC
+--  Copyright (C) 2015-2016 Delwink, LLC
 --
 --  This program is free software: you can redistribute it and/or modify
 --  it under the terms of the GNU Affero General Public License as published by
@@ -26,8 +26,8 @@ end
 
 function getboardpos()
    local halfsize = BOARD_SIZE / 2
-   local xpos = love.window.getWidth()/2 - halfsize
-   local ypos = love.window.getHeight()/2 - halfsize
+   local xpos = love.graphics.getWidth()/2 - halfsize
+   local ypos = love.graphics.getHeight()/2 - halfsize
 
    return {x=xpos, y=ypos}
 end
