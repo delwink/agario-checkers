@@ -201,7 +201,7 @@ local function makemove()
 end
 
 function love.mousepressed(x, y, button)
-   if 'l' == button then
+   if button == 'l' or button == 1 then
       for _,button in ipairs(buttons) do
 	 if button:isvisible() and button:isclick(x, y) then
 	    button:onclick()
@@ -218,7 +218,7 @@ function love.mousepressed(x, y, button)
       elseif targetspace then
 	 makemove()
       end
-   elseif 'r' == button then
+   elseif button == 'r' or button == 2 then
       selected = nil
       targetspace = nil
    end
@@ -307,7 +307,7 @@ function love.update(dt)
    end
 
    if selected then
-      wantsplit = love.keyboard.isDown(' ')
+      wantsplit = love.keyboard.isDown(' ') or love.keyboard.isDown('space')
       targetspace = getmove()
    end
 end
