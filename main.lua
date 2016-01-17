@@ -316,9 +316,6 @@ function love.draw()
    -- white background
    love.graphics.setBackgroundColor(255, 255, 255)
 
-   -- checkerboard squares
-   drawboard()
-
    -- Agario-style background grid
    love.graphics.setColor(170, 170, 170)
    local gridsize = boardsqsize() / 3
@@ -338,6 +335,9 @@ function love.draw()
       love.graphics.line(0, mid + diff, wwidth, mid + diff)
       diff = diff + gridsize
    end
+
+   -- checkerboard squares
+   drawboard()
 
    -- draw author logo
    love.graphics.setColor(0, 0, 0)
