@@ -147,6 +147,10 @@ end
 
 local function makemove()
    if wantsplit then
+      if selected.size < 10 then
+	 return
+      end
+
       local o = getoccupying(targetspace.x, targetspace.y)
       if math.abs(targetspace.x - selected.x) == 2 then
 	 if not canabsorb(o, 2) then
