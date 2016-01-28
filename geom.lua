@@ -1,6 +1,6 @@
 --
 --  Agario Checkers - Checkers-like game with inspiration from agar.io
---  Copyright (C) 2015 Delwink, LLC
+--  Copyright (C) 2015-2016 Delwink, LLC
 --
 --  This program is free software: you can redistribute it and/or modify
 --  it under the terms of the GNU Affero General Public License as published by
@@ -18,19 +18,18 @@
 local RIGHT_ANGLE = math.pi / 2
 local DEG45 = math.pi / 4
 
-local function drawline(x1, y1, x2, y2)
-   for y=-1,1 do
-      for x=-1,1 do
-	 love.graphics.line(x1 + x, y1 + y, x2 + x, y2 + y)
-      end
-   end
-end
-
 function drawbox(x, y, w, h)
-   drawline(x, y, x + w, y)
-   drawline(x, y + h, x + w, y + h)
-   drawline(x, y, x, y + h)
-   drawline(x + w, y, x + w, y + h)
+   love.graphics.setLineWidth(3)
+
+   love.graphics.line(
+      x, y,
+      x + w, y,
+      x + w, y + h,
+      x, y + h,
+      x, y
+   )
+
+   love.graphics.setLineWidth(1)
 end
 
 function getquadrant(deltax, deltay)
@@ -87,16 +86,20 @@ end
 
 function drawlineangle(x, y, length, angle)
    local change = angle + RIGHT_ANGLE -- use real angles
+   love.graphics.setLineWidth(3)
    love.graphics.translate(x, y)
    love.graphics.rotate(-change)
-   drawline(0, 0, 0, length)
+   love.graphics.line(0, 0, 0, length)
    love.graphics.rotate(change)
    love.graphics.translate(-x, -y)
+   love.graphics.setLineWidth(1)
 end
 
 function drawarrow(x1, y1, x2, y2)
    local angle = getangle(x1, y1, x2, y2)
-   drawline(x1, y1, x2, y2)
+   love.graphics.setLineWidth(3)
+   love.graphics.line(x1, y1, x2, y2)
+   love.graphics.setLineWidth(1)
    local change = DEG45 * 3
    drawlineangle(x2, y2, 5, angle - change)
    drawlineangle(x2, y2, 5, angle + change)
