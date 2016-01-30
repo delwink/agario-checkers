@@ -1,6 +1,6 @@
 --
 --  Agario Checkers - Checkers-like game with inspiration from agar.io
---  Copyright (C) 2015 Delwink, LLC
+--  Copyright (C) 2015-2016 Delwink, LLC
 --
 --  This program is free software: you can redistribute it and/or modify
 --  it under the terms of the GNU Affero General Public License as published by
@@ -29,15 +29,12 @@ function Button:__init(x, y, w, h, bg, fg)
    self.bg = bg
    self.fg = fg
 
+   self.clicked = false
    self.listeners = {}
    self.text = ''
    self.visible = false
 
    self.font = love.graphics.newFont(self.h * 0.8)
---   while self.font:getHeight() < self.h do
---      self.font:setLineHeight(self.font:getLineHeight() + 1)
---   end
-   --self.font:setLineHeight(self.font:getLineHeight() - 1)
    self.halfheight = self.font:getHeight() / 2
 end
 
@@ -45,13 +42,23 @@ function Button:addlistener(listener)
    table.insert(self.listeners, listener)
 end
 
-function Button:onclick()
-   for _,listener in ipairs(self.listeners) do
-      listener()
+function Button:onpress()
+   self.clicked = true
+end
+
+function Button:onrelease(x, y)
+   if self.clicked then
+      self.clicked = false
+
+      if self:contains(x, y) then
+	 for _,listener in ipairs(self.listeners) do
+	    listener()
+	 end
+      end
    end
 end
 
-function Button:isclick(x, y)
+function Button:contains(x, y)
    return (x >= self.x and x <= (self.x + self.w)
 	      and y >= self.y and y <= (self.y + self.h))
 end
@@ -73,7 +80,15 @@ function Button:draw()
       return
    end
 
-   love.graphics.setColor(self.bg)
+   local bg = {self.bg[1], self.bg[2], self.bg[3]}
+   local mx, my = love.mouse.getPosition()
+   if self.clicked and self:contains(mx, my) then
+      for i,val in ipairs(bg) do
+	 bg[i] = bg[i] - 50
+      end
+   end
+
+   love.graphics.setColor(bg)
    love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
 
    love.graphics.setColor(self.fg)

@@ -207,8 +207,8 @@ end
 function love.mousepressed(x, y, button)
    if button == 'l' or button == 1 then
       for _,button in ipairs(buttons) do
-	 if button:isvisible() and button:isclick(x, y) then
-	    button:onclick()
+	 if button:isvisible() and button:contains(x, y) then
+	    button:onpress()
 	    return
 	 end
       end
@@ -225,6 +225,17 @@ function love.mousepressed(x, y, button)
    elseif button == 'r' or button == 2 then
       selected = nil
       targetspace = nil
+   end
+end
+
+function love.mousereleased(x, y, button)
+   if button == 'l' or button == 1 then
+      for _,button in ipairs(buttons) do
+	 if button:isvisible() then
+	    button:onrelease(x, y)
+	    return
+	 end
+      end
    end
 end
 
