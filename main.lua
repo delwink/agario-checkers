@@ -233,7 +233,6 @@ function love.mousereleased(x, y, button)
       for _,button in ipairs(buttons) do
 	 if button:isvisible() then
 	    button:onrelease(x, y)
-	    return
 	 end
       end
    end
