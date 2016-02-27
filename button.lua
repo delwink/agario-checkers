@@ -21,11 +21,20 @@ Button = class()
 
 local defaultfont = love.graphics.getFont()
 
+local function normalizedim(d)
+   if type(d) ~= 'function' then
+      return function(self) return d end
+   end
+
+   return d
+end
+
 function Button:__init(x, y, w, h, bg, fg)
-   self.x = x
-   self.y = y
-   self.w = w
-   self.h = h
+   self.x = normalizedim(x)
+   self.y = normalizedim(y)
+   self.w = normalizedim(w)
+   self.h = normalizedim(h)
+
    self.bg = bg
    self.fg = fg
 
@@ -34,8 +43,7 @@ function Button:__init(x, y, w, h, bg, fg)
    self.text = ''
    self.visible = false
 
-   self.font = love.graphics.newFont(self.h * 0.8)
-   self.halfheight = self.font:getHeight() / 2
+   self.font = love.graphics.newFont(self:h() * 0.8)
 end
 
 function Button:addlistener(listener)
@@ -59,8 +67,8 @@ function Button:onrelease(x, y)
 end
 
 function Button:contains(x, y)
-   return (x >= self.x and x <= (self.x + self.w)
-	      and y >= self.y and y <= (self.y + self.h))
+   return (x >= self:x() and x <= (self:x() + self:w())
+	      and y >= self:y() and y <= (self:y() + self:h()))
 end
 
 function Button:setvisible(b)
@@ -73,6 +81,10 @@ end
 
 function Button:settext(text)
    self.text = text
+end
+
+function Button:_halfheight()
+   return self:h() / 2
 end
 
 function Button:draw()
@@ -89,14 +101,14 @@ function Button:draw()
    end
 
    love.graphics.setColor(bg)
-   love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+   love.graphics.rectangle('fill', self:x(), self:y(), self:w(), self:h())
 
    love.graphics.setColor(self.fg)
-   love.graphics.rectangle('line', self.x, self.y, self.w, self.h)
+   love.graphics.rectangle('line', self:x(), self:y(), self:w(), self:h())
 
    love.graphics.setFont(self.font)
-   love.graphics.printf(self.text, self.x,
-			(self.y + (self.h / 2)) - self.halfheight,
-			self.w, 'center')
+   love.graphics.printf(self.text, self:x(),
+			(self:y() + (self:h() / 2)) - self:_halfheight(),
+			self:w(), 'center')
    love.graphics.setFont(defaultfont)
 end

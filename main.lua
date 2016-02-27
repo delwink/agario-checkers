@@ -15,23 +15,37 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-require 'gamestate'
 require 'state'
+require 'gamestate'
+require 'mainmenustate'
 
 function love.load()
-   setstate(GameState())
+   love.graphics.setBackgroundColor(255, 255, 255)
+   setstate(MainMenuState())
 end
 
 function love.keypressed(key, isrepeat)
    activestate:keypressed(key, isrepeat)
 end
 
+local function normalizemousebutton(button)
+   if button == 'l' then
+      return 1
+   end
+
+   if button == 'r' then
+      return 2
+   end
+
+   return button
+end
+
 function love.mousepressed(x, y, button)
-   activestate:mousepressed(x, y, button)
+   activestate:mousepressed(x, y, normalizemousebutton(button))
 end
 
 function love.mousereleased(x, y, button)
-   activestate:mousereleased(x, y, button)
+   activestate:mousereleased(x, y, normalizemousebutton(button))
 end
 
 function love.update(dt)

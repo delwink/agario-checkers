@@ -21,7 +21,6 @@ require 'geom'
 require 'piece'
 require 'state'
 
-local authorlogo = love.graphics.newImage('res/author.png')
 local mainfont = love.graphics.getFont()
 local winfont = love.graphics.newFont(25)
 
@@ -35,9 +34,15 @@ local function resetgamestate()
    end
 end
 
+local function entermainmenustate()
+   setstate(MainMenuState())
+end
+
 GameState = class(State)
 
 function GameState:__init()
+   self._base.__init(self)
+
    self:_resetgame()
 
    local resetbutton = Button(5, 5, 50, 18, {245, 245, 245}, {0, 0, 0})
@@ -154,39 +159,10 @@ function GameState:update(dt)
 end
 
 function GameState:draw()
-   local wwidth = love.graphics.getWidth()
-   local wheight = love.graphics.getHeight()
-
-   -- white background
-   love.graphics.setBackgroundColor(255, 255, 255)
-
-   -- Agario-style background grid
-   love.graphics.setColor(170, 170, 170)
-   local gridsize = boardsqsize() / 3
-
-   local mid = wwidth / 2
-   local diff = 0
-   while diff * 2 < wwidth do
-      love.graphics.line(mid - diff, 0, mid - diff, wheight)
-      love.graphics.line(mid + diff, 0, mid + diff, wheight)
-      diff = diff + gridsize
-   end
-
-   mid = wheight / 2
-   diff = 0
-   while diff * 2 < wheight do
-      love.graphics.line(0, mid - diff, wwidth, mid - diff)
-      love.graphics.line(0, mid + diff, wwidth, mid + diff)
-      diff = diff + gridsize
-   end
+   self._base.draw(self)
 
    -- checkerboard squares
    drawboard()
-
-   -- draw author logo
-   love.graphics.setColor(0, 0, 0)
-   love.graphics.draw(authorlogo, 0, wheight - authorlogo:getHeight()/2, 0,
-		      0.5, 0.5)
 
    -- draw idle pieces in position
    for _,piece in ipairs(self._pieces) do
@@ -209,29 +185,21 @@ function GameState:draw()
       end
    end
 
-   -- draw all buttons
-   for _,button in ipairs(self._buttons) do
-      button:draw()
-   end
-
    -- indicate winner
    if self._winner ~= 0 then
       local winstr = string.format('Player %d wins!', self._winner)
       local bpos = getboardpos()
       local y = winfont:getHeight() + 12
       love.graphics.setFont(winfont)
+      love.graphics.setColor(0, 0, 0)
       love.graphics.printf(winstr, bpos.x, bpos.y - y, BOARD_SIZE, 'center')
       love.graphics.setFont(mainfont)
    end
 end
 
 function GameState:keypressed(key, isrepeat)
-   if isrepeat then
-      return
-   end
-
    if key == 'escape' then
-      love.event.quit()
+      entermainmenustate()
    end
 end
 
@@ -365,14 +333,9 @@ function GameState:_makemove()
 end
 
 function GameState:mousepressed(x, y, button)
-   if button == 1 or button == 'l' then
-      for _,button in ipairs(self._buttons) do
-	 if button:isvisible() and button:contains(x, y) then
-	    button:onpress()
-	    return
-	 end
-      end
+   self._base.mousepressed(self, x, y, button)
 
+   if button == 1 then
       if self._winner ~= 0 then
 	 return
       end
@@ -382,18 +345,12 @@ function GameState:mousepressed(x, y, button)
       elseif self._targetspace then
 	 self:_makemove()
       end
-   elseif button == 2 or button == 'r' then
+   elseif button == 2 then
       self._selected = nil
       self._targetspace = nil
    end
 end
 
 function GameState:mousereleased(x, y, button)
-   if button == 'l' or button == 1 then
-      for _,button in ipairs(self._buttons) do
-	 if button:isvisible() then
-	    button:onrelease(x, y)
-	 end
-      end
-   end
+   self._base.mousereleased(self, x, y, button)
 end
