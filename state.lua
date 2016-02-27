@@ -15,29 +15,49 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
-require 'gamestate'
-require 'state'
+require 'class'
 
-function love.load()
-   setstate(GameState())
+activestate = nil
+
+function setstate(state)
+   if activestate then
+      activestate:unload()
+   end
+
+   state:load()
+   activestate = state
 end
 
-function love.keypressed(key, isrepeat)
-   activestate:keypressed(key, isrepeat)
+State = class()
+
+function State:__init()
+
 end
 
-function love.mousepressed(x, y, button)
-   activestate:mousepressed(x, y, button)
+function State:load()
+
 end
 
-function love.mousereleased(x, y, button)
-   activestate:mousereleased(x, y, button)
+function State:unload()
+
 end
 
-function love.update(dt)
-   activestate:update(dt)
+function State:update(dt)
+
 end
 
-function love.draw()
-   activestate:draw()
+function State:draw()
+
+end
+
+function State:keypressed(key, isrepeat)
+
+end
+
+function State:mousepressed(x, y, button)
+
+end
+
+function State:mousereleased(x, y, button)
+
 end
