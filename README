@@ -7,8 +7,8 @@ Concept
 -------
 
 The game begins as normal checkers, each player possessing 12 pieces on the
-dark squares of the board. The player with the light-colored pieces will make
-the first move. All pieces begin with a mass of 10.
+dark squares of the board. The player with the purple pieces will make the
+first move. All pieces begin with a mass of 10.
 
 Pieces of the same player may merge to combine their mass. If opposing pieces
 collide, the one of smaller mass is absorbed; otherwise, they block each other
@@ -19,10 +19,10 @@ ability to move backwards on the board. A symbol will represent this ability on
 the piece.
 
 Any piece may divide into two equal pieces if sufficient space exists. Half of
-the split piece is ejected 2 spaces in some direction, and it may absorb
-opposing pieces in the process. If a larger opponent piece is in the line of
-fire, the game software prevents accidental suicide of a piece. If a king
-splits, the ejected piece does not keep king status. This is considered a
+the split piece is ejected 2 spaces in the indicated direction, and it may
+absorb opposing pieces in the process. If a larger opponent piece is in the
+line of fire, the game software prevents accidental suicide of a piece. If a
+king splits, the ejected piece does not keep king status. This is considered a
 sacrifice so that players may not quickly split and merge with all their pieces
 to obtain a full board of kings.
 
