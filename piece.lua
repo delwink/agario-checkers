@@ -1,6 +1,6 @@
 --
 --  Agario Checkers - Checkers-like game with inspiration from agar.io
---  Copyright (C) 2015 Delwink, LLC
+--  Copyright (C) 2015-2017 Delwink, LLC
 --
 --  This program is free software: you can redistribute it and/or modify
 --  it under the terms of the GNU Affero General Public License as published by
@@ -28,10 +28,11 @@ local colors = {
 local texture = love.graphics.newImage('res/piece.png')
 local king = love.graphics.newImage('res/king.png')
 
-function Piece:__init(x, y, team)
+function Piece:__init(x, y, team, id)
    self.x = x
    self.y = y
    self.team = team
+   self.id = id
 
    self.size = 10
    self.king = false

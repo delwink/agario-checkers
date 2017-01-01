@@ -1,6 +1,6 @@
 --
 --  Agario Checkers - Checkers-like game with inspiration from agar.io
---  Copyright (C) 2016 Delwink, LLC
+--  Copyright (C) 2016-2017 Delwink, LLC
 --
 --  This program is free software: you can redistribute it and/or modify
 --  it under the terms of the GNU Affero General Public License as published by
@@ -37,25 +37,29 @@ function MainMenuState:_nexty()
    return 180 + (#self._buttons * (bheight + 10))
 end
 
+function MainMenuState:_addbutton(text, listeners)
+   local btn = Button(dynbuttonx, self:_nexty(), dynbuttonw, bheight,
+                      {245, 245, 245}, {0, 0, 0})
+   btn:settext(text)
+   btn:setvisible(true)
+
+   if listeners then
+      for _,listener in ipairs(listeners) do
+         btn:addlistener(listener)
+      end
+   end
+
+   table.insert(self._buttons, btn)
+
+   return btn
+end
+
 function MainMenuState:__init()
    self._base.__init(self)
-
-   local bg = {245, 245, 245}
-   local fg = {0, 0, 0}
-
-   local startbutton = Button(dynbuttonx, self:_nexty(), dynbuttonw, bheight,
-			      bg, fg)
-   startbutton:settext('Start Game')
-   startbutton:setvisible(true)
-   startbutton:addlistener(entergamestate)
-   table.insert(self._buttons, startbutton)
-
-   local quitbutton = Button(dynbuttonx, self:_nexty(), dynbuttonw, bheight,
-			     bg, fg)
-   quitbutton:settext('Quit')
-   quitbutton:setvisible(true)
-   quitbutton:addlistener(love.event.quit)
-   table.insert(self._buttons, quitbutton)
+   self:_addbutton('Local Game', {entergamestate})
+   self:_addbutton('Host TCP/IP Game')
+   self:_addbutton('Join TCP/IP Game')
+   self:_addbutton('Quit', {love.event.quit})
 end
 
 function MainMenuState:keypressed(key, isrepeat)
