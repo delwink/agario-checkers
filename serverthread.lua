@@ -20,11 +20,22 @@ require 'class'
 local socket = require 'socket'
 local finished = false
 
+ConnectedClient = class()
+
+function ConnectedClient:__init(sock)
+   self._sock = sock
+   self.name = 'Player'
+end
+
+function ConnectedClient:process(request)
+
+end
+
 Server = class()
 
 function Server:__init(server, socks, comm)
    self._srv = server
-   self._socks = socks
+   self._clients = { ConnectedClient(socks[1]), ConnectedClient(socks[2]) }
    self._comm = comm
 end
 
