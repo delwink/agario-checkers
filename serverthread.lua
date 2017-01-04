@@ -39,6 +39,10 @@ function Server:__init(server, socks, comm)
    self._comm = comm
 end
 
+function Server:run()
+
+end
+
 local function respondlocal(str, comm, server, socks)
    if str == 'quit' then
       for _,sock in ipairs(socks) do
@@ -100,6 +104,7 @@ local function servermain()
    end
 
    server = Server(server, socks, comm)
+   return server:run()
 end
 
 servermain()
