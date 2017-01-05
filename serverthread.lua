@@ -23,7 +23,7 @@ local finished = false
 ConnectedClient = class()
 
 function ConnectedClient:__init(sock)
-   self._sock = sock
+   self.sock = sock
    self.name = 'Player'
 end
 
@@ -39,8 +39,19 @@ function Server:__init(server, socks, comm)
    self._comm = comm
 end
 
-function Server:run()
+function Server:die()
 
+end
+
+function Server:run()
+   local err = nil
+
+   while not err do
+
+   end
+
+   self:die()
+   return err
 end
 
 local function respondlocal(str, comm, server, socks)
@@ -73,6 +84,7 @@ local function servermain()
    while #socks < 2 do
       local sock = server:accept()
       if sock then
+         sock:settimeout(1000)
          local line, err = sock:receive()
          if line then
             if line == 'AGARIO CHECKERS CLIENT' then
@@ -104,7 +116,13 @@ local function servermain()
    end
 
    server = Server(server, socks, comm)
-   return server:run()
+   local err = server:run()
+
+   if err then
+      comm:supply('err ' .. err)
+   else
+      comm:supply('done')
+   end
 end
 
 servermain()
