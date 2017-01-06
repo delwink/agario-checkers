@@ -40,7 +40,12 @@ function Server:__init(server, socks, comm)
 end
 
 function Server:die()
+   for _,client in self._clients do
+      client.sock:send('SHUTDOWN\nEND\n')
+      client.sock:close()
+   end
 
+   self._srv:close()
 end
 
 function Server:run()
