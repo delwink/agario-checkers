@@ -25,6 +25,7 @@ ConnectedClient = class()
 function ConnectedClient:__init(sock)
    self.sock = sock
    self.name = 'Player'
+   self.pieces = {}
 end
 
 function ConnectedClient:process(request)
