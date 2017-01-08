@@ -28,10 +28,6 @@ function ConnectedClient:__init(sock)
    self.pieces = {}
 end
 
-function ConnectedClient:process(request)
-
-end
-
 Server = class()
 
 function Server:__init(server, socks, comm)
