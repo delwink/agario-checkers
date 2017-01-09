@@ -15,7 +15,9 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+require 'board'
 require 'class'
+require 'piece'
 
 local socket = require 'socket'
 local finished = false
@@ -25,7 +27,6 @@ ConnectedClient = class()
 function ConnectedClient:__init(sock)
    self.sock = sock
    self.name = 'Player'
-   self.pieces = {}
 end
 
 Server = class()
@@ -34,6 +35,8 @@ function Server:__init(server, socks, comm)
    self._srv = server
    self._clients = { ConnectedClient(socks[1]), ConnectedClient(socks[2]) }
    self._comm = comm
+
+   self:_resetgame()
 end
 
 function Server:die()
@@ -43,6 +46,30 @@ function Server:die()
    end
 
    self._srv:close()
+end
+
+function Server:_initrow(start, y)
+   local board_dim = BOARD_SIZE / boardsqsize()
+   for i=0,3 do
+      local x = start + i * 2
+      table.insert(self._pieces, Piece(x, y, 1))
+      table.insert(self._pieces, Piece(board_dim - (x - 1),
+				       board_dim - (y - 1),
+				       2))
+   end
+end
+
+function Server:_resetgame()
+   self._pieces = {}
+   self:_initrow(2, 1)
+   self:_initrow(1, 2)
+   self:_initrow(2, 3)
+
+   self._turn = 1
+   self._selected = nil
+   self._targetspace = nil
+   self._wantsplit = false
+   self._winner = 0
 end
 
 function Server:run()
