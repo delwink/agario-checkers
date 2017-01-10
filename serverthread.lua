@@ -75,7 +75,7 @@ end
 function Server:run()
    local err = nil
 
-   while not err do
+   while true do
 
    end
 
