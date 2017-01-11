@@ -69,7 +69,7 @@ function Server:_resetgame()
    self._selected = nil
    self._targetspace = nil
    self._wantsplit = false
-   self._winner = 0
+   self._winner = nil
 end
 
 function Server:run()
