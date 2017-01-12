@@ -39,7 +39,7 @@ function Server:__init(server, socks, comm)
    self:_resetgame()
 end
 
-function Server:die()
+function Server:_cleanup()
    for _,client in self._clients do
       client.sock:send('SHUTDOWN\nEND\n')
       client.sock:close()
@@ -79,7 +79,7 @@ function Server:run()
 
    end
 
-   self:die()
+   self:_cleanup()
    return err
 end
 
