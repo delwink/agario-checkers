@@ -28,6 +28,7 @@ function Server:__init(server, socks, comm)
    self._srv = server
    self._socks = socks
    self._names = { 'Player 1', 'Player 2' }
+   self._queue = { {}, {} }
    self._comm = comm
 
    self:_resetgame()
