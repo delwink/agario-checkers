@@ -67,6 +67,14 @@ function Server:_resetgame()
    self._winner = nil
 end
 
+function Server:_toggleturn()
+   if self._turn == 1 then
+      self._turn = 2
+   else
+      self._turn = 1
+   end
+end
+
 function Server:run()
    local err = nil
 
