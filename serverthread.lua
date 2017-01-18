@@ -35,9 +35,9 @@ function Server:__init(server, socks, comm)
 end
 
 function Server:_cleanup()
-   for _,client in self._clients do
-      client.sock:send('SHUTDOWN\nEND\n')
-      client.sock:close()
+   for _,sock in ipairs(self._socks) do
+      sock:send('SHUTDOWN\nEND\n')
+      sock:close()
    end
 
    self._srv:close()
