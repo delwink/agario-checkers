@@ -75,11 +75,24 @@ function Server:_toggleturn()
    end
 end
 
+function Server:_process()
+end
+
 function Server:run()
    local err = nil
 
    while true do
+      local recvable, _, err = socket.select(self._socks, {}, 1000)
 
+      for _,r in ipairs(recvable) do
+         if r == self._socks[1] then
+            table.insert(self._queue[1], r:recv())
+         else
+            table.insert(self._queue[2], r:recv())
+         end
+      end
+
+      self:_process()
    end
 
    self:_cleanup()
