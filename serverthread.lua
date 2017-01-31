@@ -76,6 +76,12 @@ function Server:_toggleturn()
 end
 
 function Server:_process()
+   for i,queue in ipairs(self._queue) do
+      for _,line in ipairs(queue) do
+      end
+
+      self._queue[i] = {}
+   end
 end
 
 function Server:run()
