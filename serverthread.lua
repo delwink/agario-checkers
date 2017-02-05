@@ -77,6 +77,11 @@ end
 
 function Server:_process()
    for i,queue in ipairs(self._queue) do
+      local other = 2
+      if i == 2 then
+         other = 1
+      end
+
       for _,line in ipairs(queue) do
       end
 
