@@ -75,17 +75,25 @@ function Server:_toggleturn()
    end
 end
 
-function Server:_process()
-   for i,queue in ipairs(self._queue) do
-      local other = 2
-      if i == 2 then
-         other = 1
-      end
+function Server:_sendall(msg)
+   for _,sock in ipairs(self._socks) do
+      sock:send(msg)
+   end
+end
 
+function Server:_process()
+   local other = 2
+   for this,queue in ipairs(self._queue) do
       for _,line in ipairs(queue) do
+         if line == 'DC' then
+            self:_sendall('SHUTDOWN\nEND\n')
+         else
+            self._sock[this]:send('ERR COMMAND\nEND\n')
+         end
       end
 
       self._queue[i] = {}
+      other = 1
    end
 end
 
