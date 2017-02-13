@@ -30,6 +30,7 @@ function Server:__init(server, socks, comm)
    self._names = { 'Player 1', 'Player 2' }
    self._queue = { {}, {} }
    self._comm = comm
+   self._done = false
 
    self:_resetgame()
 end
@@ -87,6 +88,8 @@ function Server:_process()
       for _,line in ipairs(queue) do
          if line == 'DC' then
             self:_sendall('SHUTDOWN\nEND\n')
+            self._done = true
+            return
          else
             self._sock[this]:send('ERR COMMAND\nEND\n')
          end
@@ -100,7 +103,7 @@ end
 function Server:run()
    local err = nil
 
-   while true do
+   while not self._done do
       local recvable, _, err = socket.select(self._socks, {}, 1000)
 
       for _,r in ipairs(recvable) do
