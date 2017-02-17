@@ -101,8 +101,13 @@ function Server:_process()
                break
             end
 
-            self._names[this] = line:concat(' ', 2)
-            self._socks[this]:send(AFFIRMATIVE)
+            local name = line:concat(' ', 2)
+            if name == self._names[other] then
+               self._socks[this]:send('ERR NAMETAKEN\nEND\n')
+            else
+               self._names[this] = name
+               self._socks[this]:send(AFFIRMATIVE)
+            end
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
