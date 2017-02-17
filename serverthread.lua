@@ -104,6 +104,8 @@ function Server:_process()
             local name = line:concat(' ', 2)
             if name == self._names[other] then
                self._socks[this]:send('ERR NAMETAKEN\nEND\n')
+            elseif #name > 16 then
+               self._socks[this:send('ERR NAMELEN\nEND\n')
             else
                self._names[this] = name
                self._socks[this]:send(AFFIRMATIVE)
