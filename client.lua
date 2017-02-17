@@ -23,7 +23,7 @@ local socket = require 'socket'
 Client = class()
 
 local function iserror(r)
-   return #r == 1 and r[1]:sub(1, 3) == 'ERR'
+   return #r == 1 and r[1]:startswith('ERR')
 end
 
 function Client:__init(host, port)

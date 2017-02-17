@@ -15,6 +15,10 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --
 
+function string:startswith(pattern)
+   return self:sub(1, pattern:len()) == pattern
+end
+
 function split(s, delim)
    local out = {}
    local last = 1
