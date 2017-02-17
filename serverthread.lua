@@ -18,9 +18,13 @@
 require 'board'
 require 'class'
 require 'piece'
+require 'util'
 
 local socket = require 'socket'
 local finished = false
+
+local AFFIRMATIVE = 'Y\nEND\n'
+local ERR_ARGNUM = 'ERR ARGNUM\nEND\n'
 
 Server = class()
 
@@ -90,8 +94,17 @@ function Server:_process()
             self:_sendall('SHUTDOWN\nEND\n')
             self._done = true
             return
+         elseif line:startswith('SETNAME') then
+            line = line:split(' ')
+            if #line < 2 then
+               self._socks[this]:send(ERR_ARGNUM)
+               break
+            end
+
+            self._names[this] = line:concat(' ', 2)
+            self._socks[this]:send(AFFIRMATIVE)
          else
-            self._sock[this]:send('ERR COMMAND\nEND\n')
+            self._socks[this]:send('ERR COMMAND\nEND\n')
          end
       end
 
