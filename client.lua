@@ -93,7 +93,7 @@ function Client:getrooms()
 
    local rooms = {}
    for _,line in ipairs(r) do
-      line = split(line, ' ')
+      line = line:split(' ')
       table.insert(rooms, line[2])
    end
 
@@ -146,7 +146,7 @@ function Client:_move(kind, dx, dy)
       return nil
    end
 
-   r = split(r[1], ' ')
+   r = r[1]:split(' ')
    if r[1] ~= 'Y' then
       return false
    end

@@ -19,14 +19,14 @@ function string:startswith(pattern)
    return self:sub(1, pattern:len()) == pattern
 end
 
-function split(s, delim)
+function string:split(delim)
    local out = {}
    local last = 1
 
-   for i = 1, #s do
-      local c = s:sub(i, i)
+   for i = 1, #self do
+      local c = self:sub(i, i)
       if c == delim then
-         table.insert(out, s:sub(last, i - 1))
+         table.insert(out, self:sub(last, i - 1))
          last = i + 1
       end
    end
