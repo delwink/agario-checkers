@@ -93,8 +93,10 @@ function Client:getrooms()
 
    local rooms = {}
    for _,line in ipairs(r) do
-      line = line:split(' ')
-      table.insert(rooms, line[2])
+      local split = line:split('"')
+      local name = split[2]
+      split = line:split(' ')
+      table.insert(rooms, { split[1], name, split[#split] })
    end
 
    return rooms

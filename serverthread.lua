@@ -32,6 +32,7 @@ function Server:__init(server, socks, comm)
    self._srv = server
    self._socks = socks
    self._names = { 'Player 1', 'Player 2' }
+   self._rooms = { 1, 0 }
    self._queue = { {}, {} }
    self._comm = comm
    self._done = false
@@ -105,11 +106,21 @@ function Server:_process()
             if name == self._names[other] then
                self._socks[this]:send('ERR NAMETAKEN\nEND\n')
             elseif #name > 16 then
-               self._socks[this:send('ERR NAMELEN\nEND\n')
+               self._socks[this]:send('ERR NAMELEN\nEND\n')
+            elseif name:find('"') then
+               self._socks[this]:send('ERR NAMECHAR\nEND\n')
             else
                self._names[this] = name
                self._socks[this]:send(AFFIRMATIVE)
             end
+         elseif line == 'GETROOMS' then
+            local players = 1
+            if self._rooms[2] == 1 then
+               players = 2
+            end
+
+            self._socks[this]:send('1 "' .. self._names[1] .. '" '
+                                      .. players .. '\nEND\n')
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
