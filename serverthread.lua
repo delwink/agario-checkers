@@ -87,6 +87,9 @@ function Server:_sendall(msg)
    end
 end
 
+function Server:_processjoin(sock)
+end
+
 function Server:_process()
    local other = 2
    for this,queue in ipairs(self._queue) do
@@ -121,6 +124,21 @@ function Server:_process()
 
             self._socks[this]:send('1 "' .. self._names[1] .. '" '
                                       .. players .. '\nEND\n')
+         elseif line:startswith('JOIN') then
+            line = line:split(' ')
+            if #line ~= 2 then
+               self._socks[this]:send(ERR_ARGNUM)
+               break
+            end
+
+            if line[2] ~= '1' then
+               self._socks[this]:send('ERR ROOMNUM\nEND\n')
+            else
+               self._rooms[this] = 1
+               self:_processjoin(self._socks[this])
+               self._socks[other]:send('FOE "' .. self._names[this]
+                                          .. '"\nEND\n')
+            end
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
