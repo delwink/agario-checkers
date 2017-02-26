@@ -34,6 +34,7 @@ function Server:__init(server, socks, comm)
    self._names = { 'Player 1', 'Player 2' }
    self._rooms = { 1, 0 }
    self._queue = { {}, {} }
+   self._updatequeue = { {}, {} }
    self._comm = comm
    self._done = false
 
@@ -66,6 +67,15 @@ function Server:_resetgame()
    self:_initrow(1, 2)
    self:_initrow(2, 3)
 
+   self._updatequeue[1] = { 'CLEARBOARD' }
+   self._updatequeue[2] = { 'CLEARBOARD' }
+   for i,piece in ipairs(self._pieces) do
+      for _,queue in ipairs(self._updatequeue) do
+         queue:insert('PIECE ' .. i .. ' ' .. piece.x .. ' ' .. piece.y .. ' '
+                         .. piece.team)
+      end
+   end
+
    self._turn = 1
    self._selected = nil
    self._targetspace = nil
@@ -85,9 +95,6 @@ function Server:_sendall(msg)
    for _,sock in ipairs(self._socks) do
       sock:send(msg)
    end
-end
-
-function Server:_processjoin(sock)
 end
 
 function Server:_process()
@@ -135,7 +142,8 @@ function Server:_process()
                self._socks[this]:send('ERR ROOMNUM\nEND\n')
             else
                self._rooms[this] = 1
-               self:_processjoin(self._socks[this])
+               self._socks[this]:send('FOE "' .. self._names[other]
+                                         .. '"\nEND\n')
                self._socks[other]:send('FOE "' .. self._names[this]
                                           .. '"\nEND\n')
             end
