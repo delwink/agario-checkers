@@ -24,6 +24,7 @@ local socket = require 'socket'
 local finished = false
 
 local AFFIRMATIVE = 'Y\nEND\n'
+local NEGATIVE = 'N\nEND\n'
 local ERR_ARGNUM = 'ERR ARGNUM\nEND\n'
 
 Server = class()
@@ -147,6 +148,8 @@ function Server:_process()
                self._socks[other]:send('FOE "' .. self._names[this]
                                           .. '"\nEND\n')
             end
+         elseif line == 'MAKEROOM' then
+            self._socks[this]:send(NEGATIVE)
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
