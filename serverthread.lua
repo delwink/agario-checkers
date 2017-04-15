@@ -26,6 +26,7 @@ local finished = false
 local AFFIRMATIVE = 'Y\nEND\n'
 local NEGATIVE = 'N\nEND\n'
 local ERR_ARGNUM = 'ERR ARGNUM\nEND\n'
+local ERR_SYNTAX = 'ERR SYNTAX\nEND\n'
 
 Server = class()
 
@@ -150,6 +151,26 @@ function Server:_process()
             end
          elseif line == 'MAKEROOM' then
             self._socks[this]:send(NEGATIVE)
+         elseif line:startswith('SELECT') then
+            line = line:split(' ')
+            if #line ~= 2 then
+               self._socks[this]:send(ERR_ARGNUM)
+               break
+            end
+
+            local i = tonumber(line[2])
+            if not i then
+               self._socks[this]:send(ERR_SYNTAX)
+            elseif self._pieces[i].team ~= this then
+               self._socks[this]:send(NEGATIVE)
+            else
+               self._selected = self._pieces[i]
+               self._socks[this]:send(AFFIRMATIVE)
+
+               for _,queue in ipairs(self._updatequeue) do
+                  queue:insert('SELECTED ' .. i)
+               end
+            end
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
