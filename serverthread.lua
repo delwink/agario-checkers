@@ -152,6 +152,11 @@ function Server:_process()
          elseif line == 'MAKEROOM' then
             self._socks[this]:send(NEGATIVE)
          elseif line:startswith('SELECT') then
+            if self._turn ~= this then
+               self._socks[this]:send(NEGATIVE)
+               break
+            end
+
             line = line:split(' ')
             if #line ~= 2 then
                self._socks[this]:send(ERR_ARGNUM)
