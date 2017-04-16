@@ -171,6 +171,13 @@ function Server:_process()
                   queue:insert('SELECTED ' .. i)
                end
             end
+         elseif line == 'DESELECT' then
+            if self._turn ~= this then
+               self._socks[this]:send(NEGATIVE)
+            else
+               self._selected = nil
+               self._socks[this]:send(AFFIRMATIVE)
+            end
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
