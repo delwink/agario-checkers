@@ -183,6 +183,10 @@ function Server:_process()
                self._selected = nil
                self._socks[this]:send(AFFIRMATIVE)
             end
+         elseif line == 'UPDATE' then
+            self._updatequeue[this]:append('END')
+            self._socks[this]:send(self._updatequeue[this]:concat('\n'))
+            self._updatequeue[this] = {}
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
          end
