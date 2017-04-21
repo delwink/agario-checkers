@@ -151,6 +151,8 @@ function Server:_process()
             end
          elseif line == 'MAKEROOM' then
             self._socks[this]:send(NEGATIVE)
+         elseif line == 'TEAM' then
+            self._socks[this]:send(this .. '\nEND\n')
          elseif line:startswith('SELECT') then
             if self._turn ~= this then
                self._socks[this]:send(NEGATIVE)
