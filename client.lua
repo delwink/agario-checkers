@@ -172,15 +172,6 @@ function Client:split(dx, dy)
    return self:_move('SPLIT', dx, dy)
 end
 
-function Client:checkwinner()
-   local r = self:request('GETWINNER')
-   if iserror(r) then
-      return nil
-   end
-
-   return tonumber(r[1])
-end
-
 function Client:getteam()
    local r = self:request('TEAM')
    if iserror(r) then
