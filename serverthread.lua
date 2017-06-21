@@ -185,6 +185,10 @@ function Server:_process()
                self._selected = nil
                self._socks[this]:send(AFFIRMATIVE)
             end
+         elseif line == 'FORFEIT' then
+            self._sendall('FORFEIT ' .. this .. '\nSHUTDOWN\nEND\n')
+            self._done = true
+            return
          elseif line == 'UPDATE' then
             self._updatequeue[this]:append('END')
             self._socks[this]:send(self._updatequeue[this]:concat('\n'))
