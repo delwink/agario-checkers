@@ -181,11 +181,11 @@ function Client:getteam()
    return tonumber(r[1])
 end
 
-function Client:surrender()
+function Client:forfeit()
    local r = self:request('FORFEIT')
    if iserror(r) then
       return nil
    end
 
-   return r[1] == 'Y'
+   return true
 end
