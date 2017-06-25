@@ -158,7 +158,7 @@ function Server:_process()
                break
             end
 
-            local name = line:concat(' ', 2)
+            local name = table.concat(line, ' ', 2)
             if name == self._names[other] then
                self._socks[this]:send('ERR NAMETAKEN\nEND\n')
             elseif #name > 16 then
@@ -252,8 +252,8 @@ function Server:_process()
             self._done = true
             return
          elseif line == 'UPDATE' then
-            self._updatequeue[this]:append('END')
-            self._socks[this]:send(self._updatequeue[this]:concat('\n'))
+            table.insert(self._updatequeue[this], 'END')
+            self._socks[this]:send(table.concat(self._updatequeue, '\n'))
             self._updatequeue[this] = {}
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
