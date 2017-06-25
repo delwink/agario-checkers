@@ -17,6 +17,7 @@
 
 require 'board'
 require 'class'
+require 'geom'
 require 'piece'
 require 'util'
 
@@ -81,7 +82,6 @@ function Server:_resetgame()
    self._turn = 1
    self._selected = nil
    self._targetspace = nil
-   self._wantsplit = false
    self._winner = nil
 end
 
@@ -91,6 +91,50 @@ function Server:_toggleturn()
    else
       self._turn = 1
    end
+end
+
+function Server:_trymove(quad, distance)
+   if distance == 2 and not self:_trymove(quad, 1) then
+      return nil
+   end
+
+   local x, y
+
+   if quad == 1 then
+      x = self._selected.x + distance
+      y = self._selected.y + distance
+   elseif quad == 2 then
+      x = self._selected.x - distance
+      y = self._selected.y + distance
+   elseif quad == 3 then
+      x = self._selected.x - distance
+      y = self._selected.y - distance
+   else
+      x = self._selected.x + distance
+      y = self._selected.y - distance
+   end
+
+   if not self._selected:canmove(x, y) then
+      return nil
+   end
+
+   return {x=x, y=y}
+end
+
+function Server:_getmove(dx, dy, wantsplit)
+   local quad = getquadrant(dx, dy)
+   if not quad then
+      return nil
+   end
+
+   if wantsplit then
+      local move = self:_trymove(quad, 2)
+      if move then
+	 return move
+      end
+   end
+
+   return self:_trymove(quad, 1)
 end
 
 function Server:_sendall(msg)
@@ -184,6 +228,24 @@ function Server:_process()
             else
                self._selected = nil
                self._socks[this]:send(AFFIRMATIVE)
+            end
+         elseif line:startswith('TRYMOVE') then
+            line = line:split(' ')
+            if self._turn ~= this or not self._selected then
+               self._socks[this]:send(NEGATIVE)
+            elseif #line ~= 3 then
+               self._socks[this]:send(ERR_ARGNUM)
+            else
+               local dx = tonumber(line[2])
+               local dy = tonumber(line[3])
+
+               if not dx or not dy then
+                  self._socks[this]:send(ERR_SYNTAX)
+               else
+                  local move = self:_getmove(dx, dy, false)
+                  self._socks[this]:send(
+                     table.concat({'Y', move.x, move.y, 'END'}, '\n'))
+               end
             end
          elseif line == 'FORFEIT' then
             self._sendall('FORFEIT ' .. this .. '\nSHUTDOWN\nEND\n')
