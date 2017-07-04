@@ -73,9 +73,11 @@ function Server:_resetgame()
    self._updatequeue[1] = { 'CLEARBOARD' }
    self._updatequeue[2] = { 'CLEARBOARD' }
    for i,piece in ipairs(self._pieces) do
+      piece.id = i
+
       for _,queue in ipairs(self._updatequeue) do
-         queue:insert('PIECE ' .. i .. ' ' .. piece.x .. ' ' .. piece.y .. ' '
-                         .. piece.team)
+         table.insert(queue, 'PIECE ' .. i .. ' ' .. piece.x .. ' ' .. piece.y
+                         .. ' ' .. piece.team)
       end
    end
 
@@ -228,8 +230,15 @@ function Server:_process()
             else
                self._selected = nil
                self._socks[this]:send(AFFIRMATIVE)
+
+               for _,queue in ipairs(self._updatequeue) do
+                  table.insert(queue, 'DESELECTED')
+               end
             end
-         elseif line:startswith('TRYMOVE') then
+         elseif (line:startswith('TRYMOVE')
+                    or line:startswith('TRYSPLIT')
+                    or line:startswith('MOVE')
+                    or line:startswith('SPLIT')) then
             line = line:split(' ')
             if self._turn ~= this or not self._selected then
                self._socks[this]:send(NEGATIVE)
@@ -242,9 +251,18 @@ function Server:_process()
                if not dx or not dy then
                   self._socks[this]:send(ERR_SYNTAX)
                else
-                  local move = self:_getmove(dx, dy, false)
+                  local split = line[1] == 'TRYSPLIT' or line[1] == 'SPLIT'
+                  local move = self:_getmove(dx, dy, split)
                   self._socks[this]:send(
                      table.concat({'Y', move.x, move.y, 'END'}, '\n'))
+
+                  if not line[1]:startswith('TRY') then
+                     for _,queue in ipairs(self._updatequeue) do
+                        table.insert(queue, line[1] .. ' ' .. self._selected.id
+                                        .. ' ' move.x .. ' ' .. move.y)
+                        table.insert(queue, 'DESELECTED')
+                     end
+                  end
                end
             end
          elseif line == 'FORFEIT' then
