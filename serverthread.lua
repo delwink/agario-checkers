@@ -95,9 +95,25 @@ function Server:_toggleturn()
    end
 end
 
-function Server:_trymove(quad, distance)
-   if distance == 2 and not self:_trymove(quad, 1) then
-      return nil
+function Server:_getoccupying(x, y)
+   for _,piece in ipairs(self._pieces) do
+      if piece.x == x and piece.y == y then
+	 return piece
+      end
+   end
+end
+
+function Server:_trymove(quad, distance, sizemod)
+   if not sizemod then
+      sizemode = 1
+   end
+
+   local step1
+   if distance == 2 then
+      step1 = self._trymove(quad, 1, sizemod)
+      if not step1 then
+         return nil
+      end
    end
 
    local x, y
@@ -120,6 +136,19 @@ function Server:_trymove(quad, distance)
       return nil
    end
 
+   local newsize = self._selected.size + sizemod
+   if distance == 2 then
+      local o = self._getoccupying(step1.x, step1.y)
+      if o then
+         newsize = newsize + o.size
+      end
+   end
+
+   local o = self:_getoccupying(x, y)
+   if o and o.team ~= self._selected.team and o.size >= newsize then
+      return nil
+   end
+
    return {x=x, y=y}
 end
 
@@ -130,10 +159,11 @@ function Server:_getmove(dx, dy, wantsplit)
    end
 
    if wantsplit then
-      local move = self:_trymove(quad, 2)
-      if move then
-	 return move
+      if self._selected.size < 10 then
+         return nil
       end
+
+      return self:_trymove(quad, 2, -self._selected.size / 2)
    end
 
    return self:_trymove(quad, 1)
@@ -253,13 +283,19 @@ function Server:_process()
                else
                   local split = line[1] == 'TRYSPLIT' or line[1] == 'SPLIT'
                   local move = self:_getmove(dx, dy, split)
+                  if not move then
+                     self._socks[this]:send(NEGATIVE)
+                     break
+                  end
+
                   self._socks[this]:send(
                      table.concat({'Y', move.x, move.y, 'END'}, '\n'))
 
-                  if not line[1]:startswith('TRY') then
-                     for _,queue in ipairs(self._updatequeue) do
-                        table.insert(queue, line[1] .. ' ' .. self._selected.id
-                                        .. ' ' move.x .. ' ' .. move.y)
+                  for _,queue in ipairs(self._updatequeue) do
+                     table.insert(queue, line[1] .. ' ' .. self._selected.id
+                                     .. ' ' move.x .. ' ' .. move.y)
+
+                     if not line[1]:startswith('TRY') then
                         table.insert(queue, 'DESELECTED')
                      end
                   end
