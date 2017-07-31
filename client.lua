@@ -148,7 +148,6 @@ function Client:_move(kind, dx, dy)
       return nil
    end
 
-   r = r[1]:split(' ')
    if r[1] ~= 'Y' then
       return false
    end
