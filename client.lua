@@ -148,11 +148,7 @@ function Client:_move(kind, dx, dy)
       return nil
    end
 
-   if r[1] ~= 'Y' then
-      return false
-   end
-
-   return {tonumber(r[2]), tonumber(r[3])}
+   return r[1] == 'Y'
 end
 
 function Client:trymove(dx, dy)
