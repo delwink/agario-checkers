@@ -53,19 +53,30 @@ function Server:_cleanup()
    self._srv:close()
 end
 
+function Server:_addpiece(new)
+   for i,piece in ipairs(self._pieces) do
+      if not piece then
+         self._pieces[i] = new
+         return
+      end
+   end
+end
+
 function Server:_initrow(start, y)
    local board_dim = BOARD_SIZE / boardsqsize()
    for i=0,3 do
       local x = start + i * 2
-      table.insert(self._pieces, Piece(x, y, 1))
-      table.insert(self._pieces, Piece(board_dim - (x - 1),
-				       board_dim - (y - 1),
-				       2))
+      self:_addpiece(Piece(x, y, 1))
+      self:_addpiece(Piece(board_dim - (x - 1), board_dim - (y - 1), 2))
    end
 end
 
 function Server:_resetgame()
    self._pieces = {}
+   for _ = 1,32 do
+      table.insert(self._pieces, nil)
+   end
+
    self:_initrow(2, 1)
    self:_initrow(1, 2)
    self:_initrow(2, 3)
