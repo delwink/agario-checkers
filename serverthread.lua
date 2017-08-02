@@ -53,10 +53,23 @@ function Server:_cleanup()
    self._srv:close()
 end
 
+function Server:_updateall(lines)
+   for _,queue in ipairs(self._updatequeue) do
+      for __,line in ipairs(lines) do
+         table.insert(queue, line)
+      end
+   end
+end
+
 function Server:_addpiece(new)
    for i,piece in ipairs(self._pieces) do
       if not piece then
+         new.id = i
          self._pieces[i] = new
+         self:_updateall({'PIECE ' .. i,
+                          'SIZE ' .. i .. ' ' .. new.size,
+                          'TEAM ' .. i .. ' ' .. new.team,
+                          'MOVE ' .. i .. ' ' .. new.x .. ' ' .. new.y})
          return
       end
    end
@@ -77,20 +90,11 @@ function Server:_resetgame()
       table.insert(self._pieces, nil)
    end
 
+   self._updatequeue[1] = { 'CLEARBOARD' }
+   self._updatequeue[2] = { 'CLEARBOARD' }
    self:_initrow(2, 1)
    self:_initrow(1, 2)
    self:_initrow(2, 3)
-
-   self._updatequeue[1] = { 'CLEARBOARD' }
-   self._updatequeue[2] = { 'CLEARBOARD' }
-   for i,piece in ipairs(self._pieces) do
-      piece.id = i
-
-      for _,queue in ipairs(self._updatequeue) do
-         table.insert(queue, 'PIECE ' .. i .. ' ' .. piece.x .. ' ' .. piece.y
-                         .. ' ' .. piece.team)
-      end
-   end
 
    self._turn = 1
    self._selected = nil
