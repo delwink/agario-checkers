@@ -191,7 +191,7 @@ function Server:_process()
    for this,queue in ipairs(self._queue) do
       for _,line in ipairs(queue) do
          if line == 'DC' then
-            self:_sendall('SHUTDOWN\nEND\n')
+            table.insert(self._updatequeue[other], 'DC')
             self._done = true
             return
          elseif line:startswith('SETNAME') then
