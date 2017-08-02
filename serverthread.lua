@@ -63,7 +63,7 @@ function Server:_addpiece(new)
 end
 
 function Server:_initrow(start, y)
-   local board_dim = BOARD_SIZE / boardsqsize()
+   local board_dim = 8
    for i=0,3 do
       local x = start + i * 2
       self:_addpiece(Piece(x, y, 1))
