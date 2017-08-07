@@ -205,6 +205,10 @@ function Server:_getmove(dx, dy, wantsplit)
    return self:_trymove(quad, 1)
 end
 
+function Server:_move(move, wantsplit)
+
+end
+
 function Server:_sendall(msg)
    for _,sock in ipairs(self._socks) do
       sock:send(msg)
@@ -324,16 +328,13 @@ function Server:_process()
                      break
                   end
 
-                  self._socks[this]:send(
-                     table.concat({'Y', move.x, move.y, 'END'}, '\n'))
+                  self._socks[this]:send(AFFIRMATIVE)
 
-                  for _,queue in ipairs(self._updatequeue) do
-                     table.insert(queue, line[1] .. ' ' .. self._selected.id
-                                     .. ' ' move.x .. ' ' .. move.y)
-
-                     if not line[1]:startswith('TRY') then
-                        table.insert(queue, 'DESELECTED')
-                     end
+                  if line[1]:startswith('TRY') then
+                     self:_updateall({'POINT ' .. move.x .. ' ' .. move.y})
+                  else
+                     self:_move(move, split)
+                     self:_updateall({'DESELECTED'})
                   end
                end
             end
