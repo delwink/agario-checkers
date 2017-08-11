@@ -246,7 +246,9 @@ function Server:_move(move, wantsplit)
       piece.size = prev.size
       self:_addpiece(piece)
 
-      self:_singlemove(move.step1, piece)
+      if move.dist == 2 then
+         self:_singlemove(move.step1, piece)
+      end
    end
 
    self:_singlemove(move, piece)
