@@ -185,7 +185,7 @@ function Server:_trymove(quad, distance, sizemod)
       return nil
    end
 
-   return {x=x, y=y}
+   return {x=x, y=y, dist=distance, step1=step1}
 end
 
 function Server:_getmove(dx, dy, wantsplit)
@@ -205,8 +205,51 @@ function Server:_getmove(dx, dy, wantsplit)
    return self:_trymove(quad, 1)
 end
 
-function Server:_move(move, wantsplit)
+function Server:_king(piece)
+   self:_updateall({'KING ' .. piece.id})
+   piece.king = true
+end
 
+function Server:_singlemove(move, piece)
+   local o = self:_getoccupying(move.x, move.y)
+   if o then
+      piece.size = piece.size + o.size
+      self:_updateall({'ABSORB ' .. piece.id .. ' ' .. o.id,
+                       'SIZE ' .. piece.id .. ' ' .. piece.size})
+
+      if o.team == piece.team and o.king then
+         self:_king(piece)
+      end
+
+      self._pieces[o.id] = nil
+   end
+
+   self:_updateall({'MOVE ' .. piece.id .. ' ' .. move.x .. ' ' .. move.y})
+   piece:move(move.x, move.y)
+
+   if ((piece.y == 1 and piece.team == 2)
+      or (piece.y == 8 and piece.team == 1)) then
+      self:_king(piece)
+   end
+end
+
+function Server:_move(move, wantsplit)
+   local piece = self._selected
+
+   self:_updateall({'DESELECTED'})
+   self._selected = nil
+
+   if wantsplit then
+      local prev = piece
+      piece = Piece(piece.x, piece.y, piece.team)
+      prev.size = prev.size / 2
+      piece.size = prev.size
+      self:_addpiece(piece)
+
+      self:_singlemove(move.step1, piece)
+   end
+
+   self:_singlemove(move, piece)
 end
 
 function Server:_sendall(msg)
@@ -334,7 +377,6 @@ function Server:_process()
                      self:_updateall({'POINT ' .. move.x .. ' ' .. move.y})
                   else
                      self:_move(move, split)
-                     self:_updateall({'DESELECTED'})
                   end
                end
             end
