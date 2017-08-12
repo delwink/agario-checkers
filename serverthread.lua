@@ -282,6 +282,8 @@ function Server:_process()
                self._socks[this]:send('ERR NAMELEN\nEND\n')
             elseif name:find('"') then
                self._socks[this]:send('ERR NAMECHAR\nEND\n')
+            elseif self._rooms[this] == 1 then
+               self._socks[this]:send('ERR INGAME\nEND\n')
             else
                self._names[this] = name
                self._socks[this]:send(AFFIRMATIVE)
