@@ -335,9 +335,7 @@ function Server:_process()
                self._selected = self._pieces[i]
                self._socks[this]:send(AFFIRMATIVE)
 
-               for _,queue in ipairs(self._updatequeue) do
-                  queue:insert('SELECTED ' .. i)
-               end
+               self:_updateall({'SELECTED ' .. i})
             end
          elseif line == 'DESELECT' then
             if self._turn ~= this then
@@ -346,9 +344,7 @@ function Server:_process()
                self._selected = nil
                self._socks[this]:send(AFFIRMATIVE)
 
-               for _,queue in ipairs(self._updatequeue) do
-                  table.insert(queue, 'DESELECTED')
-               end
+               self:_updateall({'DESELECTED'})
             end
          elseif (line:startswith('TRYMOVE')
                     or line:startswith('TRYSPLIT')
