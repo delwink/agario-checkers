@@ -388,7 +388,8 @@ function Server:_process()
             return
          elseif line == 'UPDATE' then
             table.insert(self._updatequeue[this], 'END')
-            self._socks[this]:send(table.concat(self._updatequeue, '\n'))
+            self._socks[this]:send(table.concat(self._updatequeue, '\n')
+                                      .. '\n')
             self._updatequeue[this] = {}
          else
             self._socks[this]:send('ERR COMMAND\nEND\n')
