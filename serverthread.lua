@@ -368,6 +368,7 @@ function Server:_process()
                   local move = self:_getmove(dx, dy, split)
                   if not move then
                      self._socks[this]:send(NEGATIVE)
+                     self:_updateall({'UNPOINT'})
                      break
                   end
 
