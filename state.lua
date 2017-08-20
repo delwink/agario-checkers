@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2016 Delwink, LLC
+-- Copyright (C) 2016-2017 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -40,8 +40,8 @@ require 'class'
 
 activestate = nil
 
-function setstate(state)
-   if activestate then
+function setstate(state, keepstate)
+   if activestate and not keepstate then
       activestate:unload()
    end
 
