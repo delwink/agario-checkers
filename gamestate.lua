@@ -68,7 +68,7 @@ function GameState:__init()
    local resetbutton = Button(5, 5, 50, 18, {245, 245, 245}, {0, 0, 0})
    resetbutton:settext('Reset')
    resetbutton:setvisible(true)
-   resetbutton:addlistener(resetgamestate)
+   resetbutton:addclicklistener(resetgamestate)
 
    self._gui = { resetbutton }
 end

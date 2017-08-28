@@ -66,7 +66,7 @@ function MainMenuState:_addbutton(text, listeners)
 
    if listeners then
       for _,listener in ipairs(listeners) do
-         btn:addlistener(listener)
+         btn:addclicklistener(listener)
       end
    end
 

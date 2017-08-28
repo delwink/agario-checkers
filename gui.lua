@@ -38,8 +38,6 @@
 
 require 'class'
 
-Button = class()
-
 local defaultfont = love.graphics.getFont()
 
 local function normalizedim(d)
@@ -50,7 +48,9 @@ local function normalizedim(d)
    return d
 end
 
-function Button:__init(x, y, w, h, bg, fg)
+GuiComponent = class()
+
+function GuiComponent:__init(x, y, w, h, bg, fg)
    self.x = normalizedim(x)
    self.y = normalizedim(y)
    self.w = normalizedim(w)
@@ -60,51 +60,53 @@ function Button:__init(x, y, w, h, bg, fg)
    self.fg = fg
 
    self.clicked = false
-   self.listeners = {}
+   self.clicklisteners = {}
    self.text = ''
    self.visible = false
 end
 
-function Button:addlistener(listener)
-   table.insert(self.listeners, listener)
+function GuiComponent:addclicklistener(listener)
+   table.insert(self.clicklisteners, listener)
 end
 
-function Button:onpress()
+function GuiComponent:onpress()
    self.clicked = true
 end
 
-function Button:onrelease(x, y)
+function GuiComponent:onrelease(x, y)
    if self.clicked then
       self.clicked = false
 
       if self:contains(x, y) then
-	 for _,listener in ipairs(self.listeners) do
+	 for _,listener in ipairs(self.clicklisteners) do
 	    listener()
 	 end
       end
    end
 end
 
-function Button:contains(x, y)
+function GuiComponent:contains(x, y)
    return (x >= self:x() and x <= (self:x() + self:w())
 	      and y >= self:y() and y <= (self:y() + self:h()))
 end
 
-function Button:setvisible(b)
+function GuiComponent:setvisible(b)
    self.visible = b
 end
 
-function Button:isvisible()
+function GuiComponent:isvisible()
    return self.visible
 end
 
-function Button:settext(text)
+function GuiComponent:settext(text)
    self.text = text
 end
 
-function Button:_halfheight()
+function GuiComponent:_halfheight()
    return self:h() / 2
 end
+
+Button = class(GuiComponent)
 
 function Button:draw()
    if not self.visible then
