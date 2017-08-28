@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2016 Delwink, LLC
+-- Copyright (C) 2016-2017 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -37,8 +37,6 @@
 --
 
 require 'state'
-require 'gamestate'
-require 'mainmenustate'
 
 function love.load()
    love.graphics.setBackgroundColor(255, 255, 255)

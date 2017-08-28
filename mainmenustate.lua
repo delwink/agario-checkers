@@ -36,7 +36,7 @@
 -- OF OR OTHER DEALINGS IN THE WORK.
 --
 
-require 'button'
+require 'gui'
 
 local function entergamestate()
    setstate(GameState())
@@ -55,7 +55,7 @@ end
 local bheight = 50
 
 function MainMenuState:_nexty()
-   return 180 + (#self._buttons * (bheight + 10))
+   return 180 + (#self._gui * (bheight + 10))
 end
 
 function MainMenuState:_addbutton(text, listeners)
@@ -70,7 +70,7 @@ function MainMenuState:_addbutton(text, listeners)
       end
    end
 
-   table.insert(self._buttons, btn)
+   table.insert(self._gui, btn)
 
    return btn
 end

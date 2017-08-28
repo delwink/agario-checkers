@@ -36,7 +36,7 @@
 -- OF OR OTHER DEALINGS IN THE WORK.
 --
 
-require 'class'
+require 'gui'
 
 activestate = nil
 
@@ -54,7 +54,7 @@ local authorlogo = love.graphics.newImage('res/author.png')
 State = class()
 
 function State:__init()
-   self._buttons = {}
+   self._gui = {}
 end
 
 function State:load()
@@ -94,7 +94,7 @@ function State:draw()
    end
 
    -- draw all buttons
-   for _,button in ipairs(self._buttons) do
+   for _,button in ipairs(self._gui) do
       button:draw()
    end
 
@@ -110,9 +110,9 @@ end
 
 function State:mousepressed(x, y, button)
    if button == 1 then
-      for _,button in ipairs(self._buttons) do
-	 if button:isvisible() and button:contains(x, y) then
-	    button:onpress()
+      for _,component in ipairs(self._gui) do
+	 if component:isvisible() and component:contains(x, y) then
+	    component:onpress()
 	    return
 	 end
       end
@@ -121,10 +121,13 @@ end
 
 function State:mousereleased(x, y, button)
    if button == 1 then
-      for _,button in ipairs(self._buttons) do
-	 if button:isvisible() then
-	    button:onrelease(x, y)
+      for _,component in ipairs(self._gui) do
+	 if component:isvisible() then
+	    component:onrelease(x, y)
 	 end
       end
    end
 end
+
+require 'gamestate'
+require 'mainmenustate'

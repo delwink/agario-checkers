@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2015-2016 Delwink, LLC
+-- Copyright (C) 2015-2017 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -63,8 +63,6 @@ function Button:__init(x, y, w, h, bg, fg)
    self.listeners = {}
    self.text = ''
    self.visible = false
-
-   self.font = love.graphics.newFont(self:h() * 0.8)
 end
 
 function Button:addlistener(listener)
@@ -127,7 +125,12 @@ function Button:draw()
    love.graphics.setColor(self.fg)
    love.graphics.rectangle('line', self:x(), self:y(), self:w(), self:h())
 
-   love.graphics.setFont(self.font)
+   if not self._lasth or self:h() ~= self._lasth then
+      self._font = love.graphics.newFont(self:h() * 0.8)
+      self._lasth = self:h()
+   end
+
+   love.graphics.setFont(self._font)
    love.graphics.printf(self.text, self:x(),
 			(self:y() + (self:h() / 2)) - self:_halfheight(),
 			self:w(), 'center')

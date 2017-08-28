@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2015-2016 Delwink, LLC
+-- Copyright (C) 2015-2017 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -37,10 +37,9 @@
 --
 
 require 'board'
-require 'button'
+require 'gui'
 require 'geom'
 require 'piece'
-require 'state'
 
 local mainfont = love.graphics.getFont()
 local winfont = love.graphics.newFont(25)
@@ -71,7 +70,7 @@ function GameState:__init()
    resetbutton:setvisible(true)
    resetbutton:addlistener(resetgamestate)
 
-   self._buttons = { resetbutton }
+   self._gui = { resetbutton }
 end
 
 function GameState:_initrow(start, y)
