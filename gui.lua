@@ -50,7 +50,7 @@ end
 
 GuiComponent = class()
 
-function GuiComponent:__init(x, y, w, h, bg, fg)
+function GuiComponent:__init(x, y, w, h, bg, fg, state)
    self.x = normalizedim(x)
    self.y = normalizedim(y)
    self.w = normalizedim(w)
@@ -58,6 +58,7 @@ function GuiComponent:__init(x, y, w, h, bg, fg)
 
    self.bg = bg
    self.fg = fg
+   self.state = state
 
    self.clicked = false
    self.clicklisteners = {}
@@ -69,6 +70,12 @@ function GuiComponent:addclicklistener(listener)
    table.insert(self.clicklisteners, listener)
 end
 
+function GuiComponent:_triggerclicklisteners()
+   for _,listener in ipairs(self.clicklisteners) do
+      listener()
+   end
+end
+
 function GuiComponent:onpress()
    self.clicked = true
 end
@@ -78,11 +85,13 @@ function GuiComponent:onrelease(x, y)
       self.clicked = false
 
       if self:contains(x, y) then
-	 for _,listener in ipairs(self.clicklisteners) do
-	    listener()
-	 end
+         self:_triggerclicklisteners()
       end
    end
+end
+
+function GuiComponent:onkey(key)
+
 end
 
 function GuiComponent:contains(x, y)
@@ -137,4 +146,15 @@ function Button:draw()
 			(self:y() + (self:h() / 2)) - self:_halfheight(),
 			self:w(), 'center')
    love.graphics.setFont(defaultfont)
+end
+
+TextField = class(GuiComponent)
+
+function TextField:__init(x, y, w, h, bg, fg, state)
+   self._base.__init(self, x, y, w, h, bg, fg, state)
+   self._placeholdertext = ''
+
+   self:addclicklistener(function()
+         self.state._activecomponent = self
+   end)
 end
