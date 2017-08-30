@@ -43,6 +43,10 @@ function love.load()
    setstate(MainMenuState())
 end
 
+function love.textinput(c)
+   activestate:textinput(c)
+end
+
 function love.keypressed(key, isrepeat)
    activestate:keypressed(key, isrepeat)
 end

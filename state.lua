@@ -104,6 +104,12 @@ function State:draw()
 		      0.5, 0.5)
 end
 
+function State:textinput(c)
+   if self._activecomponent and self._activecomponent.usereditable then
+      self._activecomponent:type(c)
+   end
+end
+
 function State:keypressed(key, isrepeat)
 
 end

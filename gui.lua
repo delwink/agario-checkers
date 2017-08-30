@@ -112,6 +112,10 @@ function GuiComponent:settext(text)
    self.text = text
 end
 
+function GuiComponent:type(c)
+
+end
+
 function GuiComponent:_halfheight()
    return self:h() / 2
 end
