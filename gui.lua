@@ -63,6 +63,7 @@ function GuiComponent:__init(x, y, w, h, bg, fg, state)
    self.clicked = false
    self.clicklisteners = {}
    self.text = ''
+   self.usereditable = false
    self.visible = false
 end
 
@@ -152,9 +153,11 @@ TextField = class(GuiComponent)
 
 function TextField:__init(x, y, w, h, bg, fg, state)
    self._base.__init(self, x, y, w, h, bg, fg, state)
+   self.texteditable = true
    self._placeholdertext = ''
 
    self:addclicklistener(function()
          self.state._activecomponent = self
+         love.keyboard.setTextInput(true)
    end)
 end

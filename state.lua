@@ -116,6 +116,9 @@ function State:mousepressed(x, y, button)
 	    return
 	 end
       end
+
+      self._activecomponent = nil -- user clicked away from text field
+      love.keyboard.setTextInput(false)
    end
 end
 
