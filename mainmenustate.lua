@@ -84,7 +84,7 @@ function MainMenuState:__init()
 end
 
 function MainMenuState:keypressed(key, isrepeat)
-   if key == 'escape' then
+   if key == 'escape' and not isrepeat then
       love.event.quit()
    end
 end
