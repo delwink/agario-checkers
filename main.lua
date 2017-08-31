@@ -40,6 +40,7 @@ require 'state'
 
 function love.load()
    love.graphics.setBackgroundColor(255, 255, 255)
+   love.keyboard.setKeyRepeat(true)
    setstate(MainMenuState())
 end
 
