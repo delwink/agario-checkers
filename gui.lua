@@ -40,6 +40,57 @@ require 'class'
 
 local defaultfont = love.graphics.getFont()
 
+Gui = class()
+
+function Gui:__init()
+   self._components = {}
+   self._active = nil
+end
+
+function Gui:addcomponent(component)
+   table.insert(self._components, component)
+end
+
+function Gui:mousepressed(x, y, button)
+   for _,component in ipairs(self._components) do
+      if component:mousepressed(x, y, button) then
+         return true
+      end
+   end
+
+   return false
+end
+
+function Gui:mousereleased(x, y, button)
+   for _,component in ipairs(self._components) do
+      if component:mousereleased(x, y, button) then
+         return true
+      end
+   end
+
+   return false
+end
+
+function Gui:textinput(c)
+   for _,component in ipairs(self._components) do
+      if component:textinput(c) then
+         return true
+      end
+   end
+
+   return false
+end
+
+function Gui:keypressed(key, isrepeat)
+   for _,component in ipairs(self._components) do
+      if component:keypressed(key, isrepeat) then
+         return true
+      end
+   end
+
+   return false
+end
+
 local function normalizedim(d)
    if type(d) ~= 'function' then
       return function(self) return d end
