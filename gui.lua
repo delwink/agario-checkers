@@ -63,13 +63,15 @@ function Gui:mousepressed(x, y, button)
 end
 
 function Gui:mousereleased(x, y, button)
+   local ret = false
+
    for _,component in ipairs(self._components) do
       if component:mousereleased(x, y, button) then
-         return true
+         ret = true
       end
    end
 
-   return false
+   return ret
 end
 
 function Gui:textinput(c)
