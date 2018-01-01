@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2016-2017 Delwink, LLC
+-- Copyright (C) 2016-2018 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -54,7 +54,7 @@ local authorlogo = love.graphics.newImage('res/author.png')
 State = class()
 
 function State:__init()
-   self._gui = {}
+   self._gui = Gui()
 end
 
 function State:load()
@@ -93,10 +93,8 @@ function State:draw()
       diff = diff + gridsize
    end
 
-   -- draw all buttons
-   for _,button in ipairs(self._gui) do
-      button:draw()
-   end
+   -- draw gui
+   self._gui:draw()
 
    -- draw author logo
    love.graphics.setColor(0, 0, 0)
@@ -105,38 +103,29 @@ function State:draw()
 end
 
 function State:textinput(c)
-   if self._activecomponent and self._activecomponent.usereditable then
-      self._activecomponent:type(c)
-   end
+   self._gui:textinput(c)
 end
 
 function State:keypressed(key, isrepeat)
-
+   self._gui:keypressed(key, isrepeat)
 end
 
 function State:mousepressed(x, y, button)
-   if button == 1 then
-      for _,component in ipairs(self._gui) do
-	 if component:isvisible() and component:contains(x, y) then
-	    component:onpress()
-	    return
-	 end
-      end
-
-      self._activecomponent = nil -- user clicked away from text field
-      love.keyboard.setTextInput(false)
+   if self._gui:mousepressed(x, y, button) then
+      return true
    end
+
+   return false
 end
 
 function State:mousereleased(x, y, button)
-   if button == 1 then
-      for _,component in ipairs(self._gui) do
-	 if component:isvisible() then
-	    component:onrelease(x, y)
-	 end
-      end
+   if self._gui:mousereleased(x, y, button) then
+      return true
    end
+
+   return false
 end
 
 require 'gamestate'
 require 'mainmenustate'
+--require 'hostsetupstate'

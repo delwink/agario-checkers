@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2015-2017 Delwink, LLC
+-- Copyright (C) 2015-2018 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -70,7 +70,7 @@ function GameState:__init()
    resetbutton:setvisible(true)
    resetbutton:addclicklistener(resetgamestate)
 
-   self._gui = { resetbutton }
+   self._gui:addcomponent(resetbutton)
 end
 
 function GameState:_initrow(start, y)
@@ -353,11 +353,13 @@ function GameState:_makemove()
 end
 
 function GameState:mousepressed(x, y, button)
-   self._base.mousepressed(self, x, y, button)
+   if self._base.mousepressed(self, x, y, button) then
+      return true
+   end
 
    if button == 1 then
       if self._winner ~= 0 then
-	 return
+	 return true
       end
 
       if not self._selected then
@@ -365,12 +367,21 @@ function GameState:mousepressed(x, y, button)
       elseif self._targetspace then
 	 self:_makemove()
       end
+
+      return true
    elseif button == 2 then
       self._selected = nil
       self._targetspace = nil
+      return true
    end
+
+   return false
 end
 
 function GameState:mousereleased(x, y, button)
-   self._base.mousereleased(self, x, y, button)
+   if self._base.mousereleased(self, x, y, button) then
+      return true
+   end
+
+   return false
 end

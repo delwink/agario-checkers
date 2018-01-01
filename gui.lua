@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2015-2017 Delwink, LLC
+-- Copyright (C) 2015-2018 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -49,6 +49,7 @@ end
 
 function Gui:addcomponent(component)
    table.insert(self._components, component)
+   component.gui = self
 end
 
 function Gui:mousepressed(x, y, button)
@@ -72,10 +73,9 @@ function Gui:mousereleased(x, y, button)
 end
 
 function Gui:textinput(c)
-   for _,component in ipairs(self._components) do
-      if component:textinput(c) then
-         return true
-      end
+   if self._active and self._active.usereditable then
+      self._active:textinput(c)
+      return true
    end
 
    return false
@@ -89,6 +89,12 @@ function Gui:keypressed(key, isrepeat)
    end
 
    return false
+end
+
+function Gui:draw()
+   for _,component in ipairs(self._components) do
+      component:draw()
+   end
 end
 
 local function normalizedim(d)
@@ -118,6 +124,14 @@ function GuiComponent:__init(x, y, w, h, bg, fg, state)
    self.visible = false
 end
 
+function GuiComponent:draw()
+   if not self.visible then
+      return false
+   end
+
+   return true
+end
+
 function GuiComponent:addclicklistener(listener)
    table.insert(self.clicklisteners, listener)
 end
@@ -128,11 +142,11 @@ function GuiComponent:_triggerclicklisteners()
    end
 end
 
-function GuiComponent:onpress()
+function GuiComponent:mousepressed()
    self.clicked = true
 end
 
-function GuiComponent:onrelease(x, y)
+function GuiComponent:mousereleased(x, y)
    if self.clicked then
       self.clicked = false
 
@@ -142,7 +156,7 @@ function GuiComponent:onrelease(x, y)
    end
 end
 
-function GuiComponent:onkey(key)
+function GuiComponent:keypressed(key, isrepeat)
 
 end
 
@@ -163,7 +177,7 @@ function GuiComponent:settext(text)
    self.text = text
 end
 
-function GuiComponent:type(c)
+function GuiComponent:textinput(c)
 
 end
 
@@ -174,8 +188,8 @@ end
 Button = class(GuiComponent)
 
 function Button:draw()
-   if not self.visible then
-      return
+   if not self._base.draw(self) then
+      return false
    end
 
    local bg = {self.bg[1], self.bg[2], self.bg[3]}
@@ -202,6 +216,8 @@ function Button:draw()
 			(self:y() + (self:h() / 2)) - self:_halfheight(),
 			self:w(), 'center')
    love.graphics.setFont(defaultfont)
+
+   return true
 end
 
 TextField = class(GuiComponent)

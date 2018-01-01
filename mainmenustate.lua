@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2016-2017 Delwink, LLC
+-- Copyright (C) 2016-2018 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -38,10 +38,6 @@
 
 require 'gui'
 
-local function entergamestate()
-   setstate(GameState())
-end
-
 MainMenuState = class(State)
 
 local function dynbuttonx(self)
@@ -55,7 +51,7 @@ end
 local bheight = 50
 
 function MainMenuState:_nexty()
-   return 180 + (#self._gui * (bheight + 10))
+   return 180 + (#self._gui._components * (bheight + 10))
 end
 
 function MainMenuState:_addbutton(text, listeners)
@@ -70,14 +66,14 @@ function MainMenuState:_addbutton(text, listeners)
       end
    end
 
-   table.insert(self._gui, btn)
+   self._gui:addcomponent(btn)
 
    return btn
 end
 
 function MainMenuState:__init()
    self._base.__init(self)
-   self:_addbutton('Local Game', {entergamestate})
+   self:_addbutton('Local Game', {function() setstate(GameState()) end})
    self:_addbutton('Host TCP/IP Game')
    self:_addbutton('Join TCP/IP Game')
    self:_addbutton('Quit', {love.event.quit})
