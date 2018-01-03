@@ -75,7 +75,7 @@ function Gui:mousereleased(x, y, button)
 end
 
 function Gui:textinput(c)
-   if self._active and self._active.usereditable then
+   if self._active and self._active.texteditable then
       self._active:textinput(c)
       return true
    end
@@ -122,7 +122,7 @@ function GuiComponent:__init(x, y, w, h, bg, fg, state)
    self.clicked = false
    self.clicklisteners = {}
    self.text = ''
-   self.usereditable = false
+   self.texteditable = false
    self.visible = false
 end
 
