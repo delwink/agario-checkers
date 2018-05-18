@@ -44,7 +44,7 @@ Gui = class()
 
 function Gui:__init()
    self._components = {}
-   self._active = nil
+   self._activecomponent = nil
 end
 
 function Gui:addcomponent(component)
@@ -53,13 +53,20 @@ function Gui:addcomponent(component)
 end
 
 function Gui:mousepressed(x, y, button)
+   local ret = false
+
    for _,component in ipairs(self._components) do
       if component:mousepressed(x, y, button) then
-         return true
+         ret = true
+         self._activecomponent = component
       end
    end
 
-   return false
+   if not ret then
+      self._activecomponent = nil
+   end
+
+   return ret
 end
 
 function Gui:mousereleased(x, y, button)
@@ -75,8 +82,8 @@ function Gui:mousereleased(x, y, button)
 end
 
 function Gui:textinput(c)
-   if self._active and self._active.texteditable then
-      self._active:textinput(c)
+   if self._activecomponent and self._activecomponent.texteditable then
+      self._activecomponent:textinput(c)
       return true
    end
 
@@ -109,7 +116,7 @@ end
 
 GuiComponent = class()
 
-function GuiComponent:__init(x, y, w, h, bg, fg, state)
+function GuiComponent:__init(x, y, w, h, bg, fg)
    self.x = normalizedim(x)
    self.y = normalizedim(y)
    self.w = normalizedim(w)
@@ -117,7 +124,6 @@ function GuiComponent:__init(x, y, w, h, bg, fg, state)
 
    self.bg = bg
    self.fg = fg
-   self.state = state
 
    self.clicked = false
    self.clicklisteners = {}
@@ -145,7 +151,8 @@ function GuiComponent:_triggerclicklisteners()
 end
 
 function GuiComponent:mousepressed()
-   self.clicked = true
+   self.clicked = self.visible and self:contains(x, y)
+   return self.clicked
 end
 
 function GuiComponent:mousereleased(x, y)
@@ -224,13 +231,8 @@ end
 
 TextField = class(GuiComponent)
 
-function TextField:__init(x, y, w, h, bg, fg, state)
-   self._base.__init(self, x, y, w, h, bg, fg, state)
+function TextField:__init(x, y, w, h, bg, fg)
+   self._base.__init(self, x, y, w, h, bg, fg)
    self.texteditable = true
    self._placeholdertext = ''
-
-   self:addclicklistener(function()
-         self.state._activecomponent = self
-         love.keyboard.setTextInput(true)
-   end)
 end
