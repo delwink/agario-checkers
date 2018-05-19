@@ -37,6 +37,7 @@
 --
 
 require 'class'
+require 'util'
 
 local defaultfont = love.graphics.getFont()
 
@@ -106,21 +107,13 @@ function Gui:draw()
    end
 end
 
-local function normalizedim(d)
-   if type(d) ~= 'function' then
-      return function(self) return d end
-   end
-
-   return d
-end
-
 GuiComponent = class()
 
 function GuiComponent:__init(x, y, w, h, bg, fg)
-   self.x = normalizedim(x)
-   self.y = normalizedim(y)
-   self.w = normalizedim(w)
-   self.h = normalizedim(h)
+   self.x = functionize(x)
+   self.y = functionize(y)
+   self.w = functionize(w)
+   self.h = functionize(h)
 
    self.bg = bg
    self.fg = fg
@@ -140,6 +133,10 @@ function GuiComponent:draw()
    return true
 end
 
+function GuiComponent:drawbox()
+
+end
+
 function GuiComponent:addclicklistener(listener)
    table.insert(self.clicklisteners, listener)
 end
@@ -150,12 +147,12 @@ function GuiComponent:_triggerclicklisteners()
    end
 end
 
-function GuiComponent:mousepressed()
+function GuiComponent:mousepressed(x, y, button)
    self.clicked = self.visible and self:contains(x, y)
    return self.clicked
 end
 
-function GuiComponent:mousereleased(x, y)
+function GuiComponent:mousereleased(x, y, button)
    if self.clicked then
       self.clicked = false
 
@@ -170,8 +167,10 @@ function GuiComponent:keypressed(key, isrepeat)
 end
 
 function GuiComponent:contains(x, y)
-   return (x >= self:x() and x <= (self:x() + self:w())
-	      and y >= self:y() and y <= (self:y() + self:h()))
+   return (x >= self:x()
+              and x <= (self:x() + self:w())
+	      and y >= self:y()
+              and y <= (self:y() + self:h()))
 end
 
 function GuiComponent:setvisible(b)
@@ -235,4 +234,14 @@ function TextField:__init(x, y, w, h, bg, fg)
    self._base.__init(self, x, y, w, h, bg, fg)
    self.texteditable = true
    self._placeholdertext = ''
+
+   self._scrollindex = 0
+end
+
+function TextField:draw()
+   if not self._base.draw(self) then
+      return false
+   end
+
+   return true
 end
