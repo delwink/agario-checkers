@@ -1,6 +1,6 @@
 --
 -- Agario Checkers - Checkers-like game with inspiration from agar.io
--- Copyright (C) 2017 Delwink, LLC
+-- Copyright (C) 2017-2018 Delwink, LLC
 --
 -- Redistributions, modified or unmodified, in whole or in part, must retain
 -- applicable copyright or other legal privilege notices, these conditions, and
@@ -35,6 +35,14 @@
 -- OR OTHERWISE ARISING FROM, OUT OF, OR IN CONNECTION WITH THE WORK OR THE USE
 -- OF OR OTHER DEALINGS IN THE WORK.
 --
+
+function functionize(v)
+   if type(v) ~= 'function' then
+      return function(self) return v end
+   end
+
+   return v
+end
 
 function string:startswith(pattern)
    return self:sub(1, pattern:len()) == pattern
