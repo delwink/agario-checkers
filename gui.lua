@@ -115,8 +115,8 @@ function GuiComponent:__init(x, y, w, h, bg, fg)
    self.w = functionize(w)
    self.h = functionize(h)
 
-   self.bg = bg
-   self.fg = fg
+   self.bg = functionize(bg)
+   self.fg = functionize(fg)
 
    self.clicked = {}
    self.clicklisteners = {}
@@ -134,7 +134,11 @@ function GuiComponent:draw()
 end
 
 function GuiComponent:drawbox()
+   love.graphics.setColor(self:bg())
+   love.graphics.rectangle('fill', self:x(), self:y(), self:w(), self:h())
 
+   love.graphics.setColor(self:fg())
+   love.graphics.rectangle('line', self:x(), self:y(), self:w(), self:h())
 end
 
 function GuiComponent:addclicklistener(listener)
@@ -195,24 +199,29 @@ end
 
 Button = class(GuiComponent)
 
+function Button:__init(x, y, w, h, bg, fg)
+   self._base.__init(self, x, y, w, h, bg, fg)
+
+   self._origbg = self.bg
+   self.bg = function()
+      local bg = { unpack(self:_origbg()) }
+      local mx, my = love.mouse.getPosition()
+      if self.clicked[1] and self:contains(mx, my) then
+         for i,val in ipairs(bg) do
+            bg[i] = bg[i] - 50
+         end
+      end
+
+      return bg
+   end
+end
+
 function Button:draw()
    if not self._base.draw(self) then
       return false
    end
 
-   local bg = {self.bg[1], self.bg[2], self.bg[3]}
-   local mx, my = love.mouse.getPosition()
-   if self.clicked[1] and self:contains(mx, my) then
-      for i,val in ipairs(bg) do
-	 bg[i] = bg[i] - 50
-      end
-   end
-
-   love.graphics.setColor(bg)
-   love.graphics.rectangle('fill', self:x(), self:y(), self:w(), self:h())
-
-   love.graphics.setColor(self.fg)
-   love.graphics.rectangle('line', self:x(), self:y(), self:w(), self:h())
+   self:drawbox()
 
    if not self._lasth or self:h() ~= self._lasth then
       self._font = love.graphics.newFont(self:h() * 0.8)
