@@ -118,7 +118,7 @@ function GuiComponent:__init(x, y, w, h, bg, fg)
    self.bg = bg
    self.fg = fg
 
-   self.clicked = false
+   self.clicked = {}
    self.clicklisteners = {}
    self.text = ''
    self.texteditable = false
@@ -141,23 +141,23 @@ function GuiComponent:addclicklistener(listener)
    table.insert(self.clicklisteners, listener)
 end
 
-function GuiComponent:_triggerclicklisteners()
+function GuiComponent:_triggerclicklisteners(x, y, button)
    for _,listener in ipairs(self.clicklisteners) do
-      listener()
+      listener(x, y, button)
    end
 end
 
 function GuiComponent:mousepressed(x, y, button)
-   self.clicked = self.visible and self:contains(x, y)
-   return self.clicked
+   self.clicked[button] = self.visible and self:contains(x, y)
+   return self.clicked[button]
 end
 
 function GuiComponent:mousereleased(x, y, button)
-   if self.clicked then
-      self.clicked = false
+   if self.clicked[button] then
+      self.clicked[button] = false
 
       if self:contains(x, y) then
-         self:_triggerclicklisteners()
+         self:_triggerclicklisteners(x, y, button)
       end
    end
 end
@@ -202,7 +202,7 @@ function Button:draw()
 
    local bg = {self.bg[1], self.bg[2], self.bg[3]}
    local mx, my = love.mouse.getPosition()
-   if self.clicked and self:contains(mx, my) then
+   if self.clicked[1] and self:contains(mx, my) then
       for i,val in ipairs(bg) do
 	 bg[i] = bg[i] - 50
       end
