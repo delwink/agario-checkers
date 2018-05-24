@@ -125,6 +125,15 @@ function GuiComponent:__init(x, y, w, h, bg, fg)
    self.visible = false
 end
 
+function GuiComponent:font()
+   if not self._lasth or self:h() ~= self._lasth then
+      self._font = love.graphics.newFont(self:h() * 0.8)
+      self._lasth = self:h()
+   end
+
+   return self._font
+end
+
 function GuiComponent:draw()
    if not self.visible then
       return false
@@ -223,12 +232,7 @@ function Button:draw()
 
    self:drawbox()
 
-   if not self._lasth or self:h() ~= self._lasth then
-      self._font = love.graphics.newFont(self:h() * 0.8)
-      self._lasth = self:h()
-   end
-
-   love.graphics.setFont(self._font)
+   love.graphics.setFont(self:font())
    love.graphics.printf(self.text, self:x(),
 			(self:y() + (self:h() / 2)) - self:_halfheight(),
 			self:w(), 'center')
