@@ -62,3 +62,20 @@ function string:split(delim)
 
    return out
 end
+
+function string:fitwidth(w, font)
+   local i = 0
+   local s
+
+   repeat
+      i = i + 1
+      s = self:sub(1, i)
+   until i > self:len() or font:getWidth(s) > w
+
+   if i == 1 then
+      return ''
+   end
+
+   i = i - 1
+   return self:sub(1, i)
+end

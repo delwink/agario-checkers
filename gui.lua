@@ -202,10 +202,6 @@ function GuiComponent:textinput(c)
 
 end
 
-function GuiComponent:_halfheight()
-   return self:h() / 2
-end
-
 Button = class(GuiComponent)
 
 function Button:__init(x, y, w, h, bg, fg)
@@ -233,9 +229,7 @@ function Button:draw()
    self:drawbox()
 
    love.graphics.setFont(self:font())
-   love.graphics.printf(self.text, self:x(),
-			(self:y() + (self:h() / 2)) - self:_halfheight(),
-			self:w(), 'center')
+   love.graphics.printf(self.text, self:x(), self:y(), self:w(), 'center')
    love.graphics.setFont(defaultfont)
 
    return true
@@ -246,7 +240,6 @@ TextField = class(GuiComponent)
 function TextField:__init(x, y, w, h, bg, fg)
    self._base.__init(self, x, y, w, h, bg, fg)
    self.texteditable = true
-   self._placeholdertext = ''
 
    self._scrollindex = 0
 end
@@ -255,6 +248,18 @@ function TextField:draw()
    if not self._base.draw(self) then
       return false
    end
+
+   self:drawbox()
+
+   local disptext = self.text:sub(self._scrollindex, self.text:len())
+   disptext = disptext:fitwidth(self:w() * 0.95, self.font())
+
+   local textx = self:x() + self:w()*0.05
+   local texty = self:y() + self:h()/2 - self:font():getHeight()/2
+
+   love.graphics.setFont(self:font())
+   love.graphics.print(self.text, textx, texty)
+   love.graphics.setFont(defaultfont)
 
    return true
 end
